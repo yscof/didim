@@ -1,0 +1,154 @@
+version: 0.1.0
+updatedAt: 2026-07-09
+description: >
+  배지 정의. 기획 설명은 docs/16-gamification.md 참조.
+
+principles:
+  - 모든 챌린지에 배지를 주지 않는다. 의미 있는 행동에만 지급해 가치를 유지한다.
+  - 배지 화면은 도감이 아니라 성장 기록이다. 획득 날짜와 실제 행동 문구를 함께 저장한다.
+  - 꾸준함 배지는 로그인·출석이 아니라 챌린지 완료 주 기준이다.
+  - 미획득 배지는 숨기지 않고 조건 일부를 보여준다.
+  - shareSafe가 false인 정보(금액·자산 규모)는 공유 카드에서 자동 제외한다.
+
+recordFormat:
+  fields:
+    - badgeId
+    - earnedAt
+    - actionSummary # 예 "매월 비상금 자동이체를 설정했어요" (금액은 shareSafe 규칙 적용)
+    - relatedChallengeId
+
+badges:
+  # ── 행동 배지 (MVP 5) ──
+  - id: badge-first-action
+    tier: action
+    name: 첫 금융 행동
+    condition: 첫 챌린지 완료 (challenge_completed_planned 또는 executed 1회)
+    description: 디딤에서 첫 번째 금융 행동을 완료했어요.
+    status: mvp
+    shareSafe: true
+
+  - id: badge-auto-saving-start
+    tier: action
+    name: 자동저축 시작
+    condition: mvp-emergency-fund-account-auto-transfer 실행 완료
+    description: 첫 번째 자동이체를 설정했어요.
+    status: mvp
+    shareSafe: true # 금액은 공유 카드에서 제외
+
+  - id: badge-benefit-explorer
+    tier: action
+    name: 혜택 탐험가
+    condition: mvp-money-scan-policy-benefits 또는 mvp-year-end-tax-preview 스캔 완료
+    description: 내가 받을 수 있는 혜택을 처음 확인했어요.
+    status: mvp
+    shareSafe: true
+
+  - id: badge-fixed-cost-diet
+    tier: action
+    name: 고정비 다이어트
+    condition: mvp-subscription-audit-cancel-one 또는 mvp-mobile-plan-compare에서 절감 발생 (실행 완료)
+    description: 매달 반복되는 고정비 하나를 줄였어요.
+    status: mvp
+    shareSafe: true
+
+  - id: badge-credit-first-check
+    tier: action
+    name: 신용 확인 완료
+    condition: mvp-credit-score-first-check 실행 완료
+    description: 내 신용점수를 처음 확인하고 올리는 행동을 골랐어요.
+    status: mvp
+    shareSafe: true # 점수·점수대는 공유 카드에서 제외
+
+  # ── 지역 배지 (MVP 3) ──
+  - id: badge-village-designer
+    tier: region
+    name: 생활비 설계자
+    condition: region-living-cost-village 100% 완성
+    description: 생활비 마을을 완성했어요. 매달 나가는 돈을 스스로 관리해요.
+    status: mvp
+    shareSafe: true
+
+  - id: badge-safety-net-builder
+    tier: region
+    name: 안전망 건설자
+    condition: region-emergency-forest 100% 완성
+    description: 비상금 숲을 완성했어요. 첫 번째 금융 안전망이 생겼어요.
+    status: mvp
+    shareSafe: true
+
+  - id: badge-benefit-navigator
+    tier: region
+    name: 혜택 항해사
+    condition: region-benefit-harbor 100% 완성
+    description: 정책혜택 항구를 완성했어요. 받을 수 있는 혜택을 놓치지 않아요.
+    status: mvp
+    shareSafe: true
+
+  # ── 꾸준함 배지 (MVP 2) ──
+  - id: badge-routine-2weeks
+    tier: consistency
+    name: 2주 금융 루틴
+    condition: 주간 스트릭 2주 (매주 핵심 챌린지 1개 이상 완료 또는 성실한 보류)
+    description: 2주 연속 금융 루틴을 지켰어요.
+    status: mvp
+    shareSafe: true
+
+  - id: badge-routine-4weeks
+    tier: consistency
+    name: 4주 금융 루틴
+    condition: 주간 스트릭 4주
+    description: 한 달 동안 금융 루틴을 지켰어요.
+    status: mvp
+    shareSafe: true
+
+  # ── 베타 후보 ──
+  - id: badge-application-ready
+    tier: action
+    name: 신청 준비 완료
+    condition: 정책 신청 서류 준비 후속 미션 완료
+    status: beta
+    shareSafe: true
+
+  - id: badge-comeback
+    tier: consistency
+    name: 다시 디딤
+    condition: 보류한 챌린지를 재시도해 완료 (challenge_retry → completed)
+    description: 멈췄던 챌린지를 다시 이어서 완료했어요.
+    status: beta
+    shareSafe: true
+    notes: 실패 복구 철학의 상징 배지. 보류가 부끄러운 게 아니라 여정의 일부임을 보여준다.
+
+  - id: badge-fortress-defender
+    tier: region
+    name: 금융 방어자
+    condition: region-credit-fortress 100% 완성
+    status: beta
+    shareSafe: true
+
+  - id: badge-saving-farmer
+    tier: region
+    name: 저축 농부
+    condition: region-saving-plains 100% 완성
+    status: beta
+    shareSafe: true
+
+  - id: badge-journey-3months
+    tier: consistency
+    name: 3개월 금융 여정
+    condition: 주간 스트릭 12주
+    status: beta
+    shareSafe: true
+
+  - id: badge-challenge-10
+    tier: consistency
+    name: 챌린지 10개 완료
+    condition: 누적 완료 10개
+    status: beta
+    shareSafe: true
+
+  - id: badge-challenge-30
+    tier: consistency
+    name: 챌린지 30개 완료
+    condition: 누적 완료 30개
+    status: beta
+    shareSafe: true

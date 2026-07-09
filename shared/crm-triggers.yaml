@@ -1,0 +1,49 @@
+version: 0.1.0
+updatedAt: 2026-07-07
+principles:
+  - Send only when there is a clear next action.
+  - Prefer situation-based personalization over sensitive financial data.
+  - Do not create urgency with fear or guaranteed financial outcomes.
+triggers:
+  - id: onboarding_not_completed
+    stage: activation
+    condition: onboarding_started_but_not_completed_after_24h
+    channel: push_or_email
+    messageTemplate: "진단을 1분만 이어서 끝내면 이번 주 금융 행동을 바로 추천해드릴게요."
+    successMetric: onboarding_completed
+
+  - id: first_challenge_not_accepted
+    stage: activation
+    condition: diagnosis_viewed_but_challenge_not_accepted_after_6h
+    channel: push
+    messageTemplate: "이번 주에는 {challengeTitle} 하나만 해보면 돼요. 예상 소요 시간은 {estimatedMinutes}분이에요."
+    successMetric: challenge_accepted
+
+  - id: challenge_started_not_completed
+    stage: retention
+    condition: challenge_accepted_but_no_completion_after_24h
+    channel: push
+    messageTemplate: "어제 시작한 {challengeTitle}, 마지막 단계만 체크하면 기록으로 남길 수 있어요."
+    successMetric: challenge_completed_planned_or_executed
+
+  - id: held_challenge_retry
+    stage: retention
+    condition: challenge_held_and_retry_date_is_today
+    channel: push
+    messageTemplate: "보류했던 {challengeTitle}, 오늘은 3분만 이어서 해볼까요?"
+    successMetric: challenge_retry_scheduled_or_completed
+
+  - id: payday_saving_reminder
+    stage: retention
+    condition: payday_is_tomorrow_or_today
+    channel: push
+    messageTemplate: "월급일에 맞춰 저축 계획을 점검할 시간이에요. 이번 달 목표만 확인해볼까요?"
+    successMetric: challenge_accepted
+
+  - id: weekly_progress_summary
+    stage: retention
+    condition: weekly_summary_available
+    channel: push_or_in_app
+    messageTemplate: "이번 주 금융 행동 {completedCount}개가 쌓였어요. 지난 방문 이후 변화를 확인해보세요."
+    successMetric: weekly_progress_viewed
+

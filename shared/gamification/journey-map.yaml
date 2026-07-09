@@ -1,0 +1,220 @@
+version: 0.1.0
+updatedAt: 2026-07-09
+description: >
+  금융 여정 지도 정의. 챌린지 완료가 지도 변화로 이어지는 매핑 데이터.
+  기획 설명은 docs/16-gamification.md, 챌린지 상세는
+  shared/challenges/mvp-core-challenges.yaml 참조.
+
+coreLoop: 이번 주 챌린지 추천 → 실제 금융 행동 → 완료 리액션 → 지도 변화 → 배지 획득 → 다음 지역·챌린지 해금
+
+progressRules:
+  executed: 챌린지 progressWeight의 100% 반영
+  planned: progressWeight의 50% 반영 (실행 체크 시 나머지 반영)
+  held: 진행도 0, 지도에 예약 표지판 표시 (다음 시도 날짜)
+  retroactive: 잠긴 지역 소속 챌린지를 먼저 완료하면 해금 시 진행도 소급 반영
+
+milestones:
+  - percent: 20
+    effect: 길 생성
+  - percent: 40
+    effect: 작은 건물 생성 + 다음 지역 해금 조건 충족
+  - percent: 60
+    effect: 대표 오브젝트 생성
+  - percent: 80
+    effect: 지역 활성화 (불빛·주민)
+  - percent: 100
+    effect: 지역 완성 + 지역 배지 지급
+
+regions:
+  - id: region-start
+    name: 출발지
+    theme: 금융상태 점검
+    status: mvp
+    unlockCondition: 기본 해금
+    completionMessage: >
+      출발 준비가 끝났어요. 지금의 나를 알았으니, 이제 어디로든 갈 수 있어요.
+    challenges:
+      - challengeId: onboarding-spending-character-test
+        role: main
+        progressWeight: 30
+        mapEffect: 내 캐릭터가 지도에 등장
+      - challengeId: onboarding-account-nickname
+        role: main
+        progressWeight: 20
+        mapEffect: 출발지에 이정표가 세워짐
+      - challengeId: mvp-net-worth-first-calc
+        role: main
+        progressWeight: 35
+        mapEffect: 전망대에서 내 위치(출발선)가 표시됨
+      - challengeId: mvp-letter-to-future-self
+        role: side
+        progressWeight: 15
+        mapEffect: 타임캡슐이 묻힘 (1년 뒤 개봉 표시)
+
+  - id: region-living-cost-village
+    name: 생활비 마을
+    theme: 내 돈이 어디로 나가는지 이해하고 불필요한 지출 줄이기
+    status: mvp
+    unlockCondition: 출발지 온보딩 완료
+    completionMessage: >
+      생활비 마을이 완성됐어요. 이제 매달 나가는 돈을 스스로 관리할 수 있어요.
+    challenges:
+      - challengeId: mvp-disposable-income
+        role: main
+        progressWeight: 15
+        mapEffect: 마을 길이 정돈되고 밝아짐
+      - challengeId: mvp-subscription-audit-cancel-one
+        role: main
+        progressWeight: 20
+        mapEffect: 상점 거리가 정리되고 간판이 켜짐
+      - challengeId: mvp-mobile-plan-compare
+        role: main
+        progressWeight: 20
+        mapEffect: 마을에 통신탑이 세워짐
+      - challengeId: mvp-delivery-cut-weekly
+        role: side
+        progressWeight: 15
+        mapEffect: 마을 부엌에 연기가 피어오름
+      - challengeId: mvp-no-spend-day
+        role: side
+        progressWeight: 10
+        mapEffect: 가로등이 하나 켜짐
+      - challengeId: mvp-impulse-24h-hold
+        role: side
+        progressWeight: 10
+        mapEffect: 마을 광장에 시계탑이 생김 (24시간)
+      - challengeId: mvp-labor-hour-price
+        role: side
+        progressWeight: 10
+        mapEffect: 시장에 저울이 놓임
+
+  - id: region-emergency-forest
+    name: 비상금 숲
+    theme: 최소한의 금융 안전망 만들기
+    status: mvp
+    unlockCondition: 기본 해금 (진단 결과 비상금 부족 시 첫 추천 경로)
+    completionMessage: >
+      비상금 숲이 자라났어요. 예상치 못한 상황을 버틸 수 있는
+      첫 번째 안전망을 만들었습니다.
+    challenges:
+      - challengeId: mvp-emergency-fund-goal
+        role: main
+        progressWeight: 25
+        mapEffect: 씨앗이 심어짐
+      - challengeId: mvp-emergency-fund-account-auto-transfer
+        role: main
+        progressWeight: 45
+        mapEffect: 첫 번째 나무가 자람
+      - challengeId: side-emergency-fund-keep-1month
+        role: side
+        progressWeight: 30
+        mapEffect: 숲에 쉼터가 생김
+    sideChallengeDefs:
+      - id: side-emergency-fund-keep-1month
+        title: 비상금 자동이체 한 달 유지하기
+        challengeType: C
+        durationLabel: 한 달
+        summary: M-3 완료 후 자동 발행. 첫 이체일과 둘째 이체일 확인 체크인 2회.
+        gainLabel: realized
+
+  - id: region-benefit-harbor
+    name: 정책혜택 항구
+    theme: 받을 수 있는 혜택을 놓치지 않기 (서비스 차별성 핵심 지역)
+    status: mvp
+    unlockCondition: 생활비 마을 또는 비상금 숲 40% 이상 (진단상 정책 관심 사용자는 즉시 해금)
+    completionMessage: >
+      정책혜택 항구의 등대가 켜졌어요. 이제 받을 수 있는 혜택을
+      놓치지 않도록 안내해 드릴게요.
+    challenges:
+      - challengeId: mvp-money-scan-policy-benefits
+        role: main
+        progressWeight: 30
+        mapEffect: 항구에 배가 들어옴
+      - challengeId: mvp-year-end-tax-preview
+        role: main
+        progressWeight: 35
+        mapEffect: 등대에 불이 켜짐
+      - challengeId: mvp-housing-subscription-open
+        role: main
+        progressWeight: 35
+        mapEffect: 새로운 항로가 열림 (집으로 가는 뱃길)
+    followupAsSide: >
+      스캔형 챌린지(M-12, M-13)의 후속 미션(월세 서류 3종, 카드 25% 라인 체크 등)은
+      항구의 사이드 챌린지로 발행되며 화물 하역·창고 오브젝트로 표현한다.
+      진행도 초과분은 지역 완성 후 장식으로만 반영한다.
+    seasonEvent: >
+      M-13 시즌 트리거(10월 말 미리보기, 1월 서류 제출)는
+      '등대 점검의 날' 항구 이벤트로 표현한다.
+
+  - id: region-credit-fortress
+    name: 신용·부채 요새
+    theme: 신용과 부채를 위험이 아닌 관리 대상으로 인식하기
+    status: beta
+    unlockCondition: 베타 오픈 + 항구 또는 마을 60% 이상
+    silhouette: MVP에서는 실루엣으로 예고. M-14 완료 기록은 해금 시 소급 반영 (성문이 미리 열림)
+    completionMessage: >
+      금융 요새가 단단해졌어요. 신용과 부채를 관리할 준비가 되었습니다.
+    challenges:
+      - challengeId: mvp-credit-score-first-check
+        role: main
+        progressWeight: 40
+        mapEffect: 성문이 열림
+      - challengeId: exp-student-loan-strategy
+        role: main
+        progressWeight: 35
+        mapEffect: 무너진 성벽이 복구됨
+      - challengeId: exp-insurance-audit
+        role: side
+        progressWeight: 25
+        mapEffect: 방패가 세워짐
+
+  - id: region-saving-plains
+    name: 저축 평원
+    theme: 막연한 저축을 구체적인 목표와 습관으로
+    status: beta
+    unlockCondition: 베타 오픈 + 비상금 숲 완성
+    silhouette: MVP에서는 실루엣으로 예고. M-11 완료 기록은 해금 시 소급 반영
+    completionMessage: >
+      저축 평원에 첫 수확이 열렸어요. 목표를 위해 돈이 움직이기 시작했습니다.
+    challenges:
+      - challengeId: mvp-deposit-rate-check
+        role: main
+        progressWeight: 30
+        mapEffect: 밭이 생김
+      - challengeId: exp-smart-goals
+        role: main
+        progressWeight: 25
+        mapEffect: 작물이 자람
+      - challengeId: exp-weekly-saving-challenge
+        role: side
+        progressWeight: 25
+        mapEffect: 풍차가 돌기 시작함
+      - challengeId: exp-simple-vs-compound-calculator
+        role: side
+        progressWeight: 20
+        mapEffect: 창고가 완성됨
+
+  - id: region-invest-lookout
+    name: 투자 전망대
+    theme: 금융 기반을 만든 사용자를 위한 후반 지역
+    status: later
+    unlockCondition: 비상금 숲·정책혜택 항구 완성 + 4단계 도달 (투자는 기반 완성 후)
+    silhouette: 산 위 실루엣만 표시
+    challenges: []
+    notes: 확장 saving_investing 챌린지 배치. 실매수 격리 원칙 유지 (계산·관찰·원칙 세우기만).
+
+recommendedRoutes:
+  - id: route-no-emergency-fund
+    condition: 진단 결과 비상금 없음
+    path:
+      - mvp-disposable-income
+      - mvp-emergency-fund-goal
+      - mvp-emergency-fund-account-auto-transfer
+      - side-emergency-fund-keep-1month
+  - id: route-policy-interest
+    condition: 온보딩에서 정책 혜택 관심 선택
+    path:
+      - mvp-money-scan-policy-benefits
+      - 스캔 결과 첫 행동 (후속 미션)
+      - mvp-year-end-tax-preview
+      - mvp-housing-subscription-open

@@ -1,0 +1,205 @@
+/// 목 데이터. shared/challenges/mvp-core-challenges.yaml과
+/// shared/gamification/journey-map.yaml의 일부를 Dart로 옮긴 것이다.
+/// TODO: 백엔드 API가 생기면 이 파일을 저장소 레이어로 교체한다.
+library;
+
+import 'models.dart';
+
+const mockRegions = [
+  MapRegion(
+    id: 'region-living-cost-village',
+    name: '생활비 마을',
+    theme: '내 돈이 어디로 나가는지 이해하고 불필요한 지출 줄이기',
+    completionMessage: '생활비 마을이 완성됐어요. 이제 매달 나가는 돈을 스스로 관리할 수 있어요.',
+  ),
+  MapRegion(
+    id: 'region-emergency-forest',
+    name: '비상금 숲',
+    theme: '최소한의 금융 안전망 만들기',
+    completionMessage: '비상금 숲이 자라났어요. 예상치 못한 상황을 버틸 첫 번째 안전망을 만들었습니다.',
+  ),
+  MapRegion(
+    id: 'region-benefit-harbor',
+    name: '정책혜택 항구',
+    theme: '받을 수 있는 혜택을 놓치지 않기',
+    completionMessage: '정책혜택 항구의 등대가 켜졌어요. 받을 수 있는 혜택을 놓치지 않도록 안내해 드릴게요.',
+  ),
+];
+
+const mockChallenges = [
+  Challenge(
+    id: 'mvp-disposable-income',
+    title: '월급 하루 생존 테스트',
+    subtitle: '진짜 가용액 계산',
+    type: ChallengeType.instant,
+    estimatedMinutes: 7,
+    coachHook: '월급이 들어온 날, 이미 나가기로 정해진 돈을 다 빼면 얼마가 남을까요? '
+        '7분이면 내 진짜 월급을 알 수 있어요.',
+    whyContent: '통장에 찍히는 월급과 실제로 쓸 수 있는 돈은 다르다. '
+        '고정지출을 뺀 가처분액을 알아야 저축 목표도 소비 기준도 세울 수 있다.',
+    steps: [
+      '월 실수령액을 입력한다.',
+      '고정지출을 카테고리별로 입력한다 (주거·통신·구독·교통·보험·대출 상환).',
+      '진짜 가처분액을 확인한다.',
+      '하루 가용액(가처분액 ÷ 30)을 확인한다.',
+    ],
+    gainLabel: GainLabel.discovery,
+    impactPreview: '내 진짜 가처분액과 하루 가용액을 알게 됐어요. 이 숫자가 모든 챌린지의 기준이 돼요.',
+    regionId: 'region-living-cost-village',
+    mapEffect: '마을 길이 정돈되고 밝아짐',
+    progressWeight: 15,
+    nextChallengeId: 'mvp-subscription-audit-cancel-one',
+  ),
+  Challenge(
+    id: 'mvp-subscription-audit-cancel-one',
+    title: '구독 전수조사 + 1개 이상 해지',
+    type: ChallengeType.action,
+    estimatedMinutes: 10,
+    coachHook: '한 달에 몇 개 구독료가 나가는지 정확히 알고 계세요? '
+        '10분 전수조사로 안 쓰는 구독 하나만 잘라도 1년치가 돌아와요.',
+    whyContent: '구독은 가장 잊기 쉬운 고정지출이다. 한 번 전수조사하면 매달 반복되는 절감 효과가 생긴다.',
+    steps: [
+      '최근 한 달 카드·계좌 내역에서 정기 결제를 찾는다.',
+      '앱스토어(구글·애플) 구독 관리 화면을 확인한다.',
+      '구독 목록을 만들고 최근 한 달 사용 여부를 체크한다.',
+      '안 쓰는 구독 1개 이상을 해지하고 금액을 기록한다.',
+    ],
+    gainLabel: GainLabel.annualized,
+    impactPreview: '월 9,900원을 줄였어요. 1년 기준 118,800원 절약 효과예요 (연 환산 · 예상).',
+    impactAmountWon: 118800,
+    regionId: 'region-living-cost-village',
+    mapEffect: '상점 거리가 정리되고 간판이 켜짐',
+    progressWeight: 20,
+    nextChallengeId: 'mvp-emergency-fund-goal',
+  ),
+  Challenge(
+    id: 'mvp-no-spend-day',
+    title: '무지출 데이 1회',
+    type: ChallengeType.habit,
+    estimatedMinutes: 3,
+    coachHook: '딱 하루만 지갑을 닫아봐요. 자동결제는 예외니까 생각보다 어렵지 않아요.',
+    whyContent: '무지출 데이는 금액보다 지출을 선택할 수 있다는 감각을 만드는 훈련이다.',
+    steps: [
+      '무지출 데이 날짜를 정한다 (약속 없는 날 권장).',
+      '당일 아침 시작 체크인을 한다.',
+      '하루를 지출 없이 보낸다 (자동결제 예외).',
+      '하루 끝 결산 체크인을 한다.',
+    ],
+    gainLabel: GainLabel.realized,
+    impactPreview: '오늘 하루 평균 일지출 23,000원을 지켰어요 (실발생).',
+    impactAmountWon: 23000,
+    regionId: 'region-living-cost-village',
+    mapEffect: '가로등이 하나 켜짐',
+    progressWeight: 10,
+  ),
+  Challenge(
+    id: 'mvp-emergency-fund-goal',
+    title: '내 비상금 목표 정하기',
+    type: ChallengeType.instant,
+    estimatedMinutes: 5,
+    coachHook: '비상금은 많을수록 좋은 돈이 아니라 내 상황에 맞는 만큼이면 되는 돈이에요. '
+        '내 기준을 5분 만에 정해봐요.',
+    whyContent: '기준이 있어야 얼마나 모았는지가 보인다. 수입이 일정하면 짧게, 불규칙하면 길게 잡는다.',
+    steps: [
+      '월 필수 생활비를 확인한다.',
+      '고용 형태를 선택한다 (정규직 3개월 / 계약직·프리랜서 6개월 권장).',
+      '추천 개월 수를 확인하고 필요하면 조정한다.',
+      '목표액을 확정하고 저장한다.',
+    ],
+    gainLabel: GainLabel.estimated,
+    impactPreview: '내 비상금 목표가 생겼어요. 이제 얼마나 모았는지가 보여요.',
+    regionId: 'region-emergency-forest',
+    mapEffect: '씨앗이 심어짐',
+    progressWeight: 25,
+    nextChallengeId: 'mvp-emergency-fund-account-auto-transfer',
+  ),
+  Challenge(
+    id: 'mvp-emergency-fund-account-auto-transfer',
+    title: '비상금 통장 분리 + 자동이체',
+    type: ChallengeType.action,
+    estimatedMinutes: 20,
+    coachHook: '비상금이 생활비 통장에 섞여 있으면 반드시 쓰게 돼요. '
+        '오늘 20분으로 안 보이는 금고를 만들어봐요.',
+    whyContent: '저축은 의지보다 구조가 중요하다. 통장을 분리하고 월급 직후 자동이체를 걸면 '
+        '의지 없이도 비상금이 쌓인다.',
+    steps: [
+      '비상금 전용으로 쓸 통장을 고르거나 새로 만들 은행을 정한다.',
+      '통장에 별명을 붙인다 (예: 3개월 버티는 돈).',
+      '자동이체 날짜를 월급일 다음 날로 정한다.',
+      '자동이체 금액을 정한다.',
+      '은행 앱에서 자동이체를 설정한다.',
+    ],
+    gainLabel: GainLabel.annualized,
+    impactPreview: '매달 20만 원씩 모으면 1년 후 240만 원의 비상금이 생겨요 (연 환산 · 예상).',
+    impactAmountWon: 2400000,
+    regionId: 'region-emergency-forest',
+    mapEffect: '첫 번째 나무가 자람',
+    progressWeight: 45,
+    nextChallengeId: 'mvp-money-scan-policy-benefits',
+  ),
+  Challenge(
+    id: 'mvp-money-scan-policy-benefits',
+    title: '놓치는 돈 스캔',
+    subtitle: '숨은 지원금·감면 확인',
+    type: ChallengeType.instant,
+    estimatedMinutes: 7,
+    coachHook: '신청 안 하면 아무도 챙겨주지 않는 돈이 있어요. '
+        '문항 몇 개만 답하면, 내가 놓치고 있을 지원금과 감면을 훑어드릴게요.',
+    whyContent: '청년 대상 지원금과 감면은 종류가 많고 흩어져 있어 존재 자체를 모르는 경우가 많다. '
+        '결과는 응답 기반 추정이며 최종 자격은 공식 페이지에서 확인한다.',
+    steps: [
+      '자격 문항에 답한다 (나이, 고용 형태, 소득 구간, 주거 등).',
+      '해당 가능 항목 리스트를 확인한다.',
+      '항목별 예상 금액과 합산 찾은 돈을 확인한다.',
+      '가장 금액이 큰 항목 1개의 다음 행동을 예약한다.',
+    ],
+    gainLabel: GainLabel.estimated,
+    impactPreview: '놓치고 있던 돈 약 35만 원을 찾았어요 (추정 · 2026년 기준). 공식 페이지에서 최종 확인하세요.',
+    impactAmountWon: 350000,
+    regionId: 'region-benefit-harbor',
+    mapEffect: '항구에 배가 들어옴',
+    progressWeight: 30,
+    nextChallengeId: 'mvp-year-end-tax-preview',
+  ),
+  Challenge(
+    id: 'mvp-year-end-tax-preview',
+    title: '13월의 월급 예약하기',
+    subtitle: '연말정산, 지금 예약하면 더 돌려받아요',
+    type: ChallengeType.action,
+    estimatedMinutes: 15,
+    coachHook: '연말정산이 연말에 하는 것이 아니라는 거 아세요? 1월에 서류 내는 건 채점일 뿐이고, '
+        '점수는 지금부터 12월까지 쌓여요.',
+    whyContent: '연말정산의 승부는 연중이다. 연금저축 납입, 월세 서류, 카드 비율은 12월에 알면 늦다. '
+        '환급은 공돈이 아니라 내가 낸 세금을 돌려받는 것이다.',
+    steps: [
+      '스캔 문항 6개에 답한다 (고용 형태 / 회사 규모 / 나이 / 주거 / 무주택 여부 / 이미 하는 것).',
+      '내 환급 지도를 확인한다 (항목별 예상 금액).',
+      '이번 주 첫 행동 1개를 고른다.',
+      '실행 가이드를 따라 실행한다.',
+    ],
+    gainLabel: GainLabel.estimated,
+    impactPreview: '지금 챙기면 내년 2월 현금이 약 91만 원 늘어나요 (추정 · 2026년 기준).',
+    impactAmountWon: 910000,
+    regionId: 'region-benefit-harbor',
+    mapEffect: '등대에 불이 켜짐',
+    progressWeight: 35,
+  ),
+];
+
+const mockBadges = [
+  DidimBadge(
+    id: 'badge-first-action',
+    name: '첫 금융 행동',
+    description: '디딤에서 첫 번째 금융 행동을 완료했어요.',
+  ),
+  DidimBadge(
+    id: 'badge-auto-saving-start',
+    name: '자동저축 시작',
+    description: '첫 번째 자동이체를 설정했어요.',
+  ),
+  DidimBadge(
+    id: 'badge-benefit-explorer',
+    name: '혜택 탐험가',
+    description: '내가 받을 수 있는 혜택을 처음 확인했어요.',
+  ),
+];

@@ -1,0 +1,437 @@
+version: 1.0.0
+updatedAt: 2026-07-07
+sourceFile: didim_challenge_library_v1.md
+counts:
+  onboarding: 2
+  mvpCore: 16
+  expansionDeclared: 26
+  expansionNormalized: 32
+  absorbed: 15
+  isolatedOrExcluded: 8
+challengeTypes:
+  A: 즉시완료(앱 안)
+  B: 실행(외부 1회)
+  C: 습관(주간 반복)
+principles:
+  - 행동이 없으면 챌린지가 아니다.
+  - 실매수와 특정 종목 판단 유도는 격리한다.
+  - 중복 행동은 하나의 챌린지로 통합한다.
+  - 확보효과는 고정 금액이 아니라 산식으로 계산한다.
+  - 학습형 콘텐츠는 스텝1, whyContent, SRS 복습 카드로 흡수한다.
+onboarding:
+  - id: onboarding-spending-character-test
+    sourceCode: O-1
+    title: 소비 캐릭터 테스트
+    subtitle: 나는 어떤 동물로 돈을 쓸까
+    challengeType: A
+    estimatedMinutes: 3
+    category: onboarding
+    assetStage: 온보딩
+    summary: 밸런스 게임 6~8문항으로 동물 캐릭터, 새는 구멍, 첫 처방을 제공한다.
+    absorbedSources:
+      - 카드 소비 캐릭터
+      - 밸런스 게임
+      - 1만원 상상게임
+      - 레벨 테스트
+
+  - id: onboarding-account-nickname
+    sourceCode: O-2
+    title: 내 통장에 이름 붙여주기
+    challengeType: A
+    estimatedMinutes: 5
+    category: onboarding
+    assetStage: 온보딩
+    summary: 보유 통장 칩 선택과 코치 제안 작명으로 심리적 계좌를 만든다.
+    absorbedSources:
+      - 통장 별명 붙이기
+      - 내 통장은 무슨 역할
+
+mvpCore:
+  - id: mvp-disposable-income
+    sourceCode: M-1
+    title: 월급 하루 생존 테스트
+    subtitle: 진짜 가용액 계산
+    challengeType: A
+    estimatedMinutes: 7
+    category: emergency_fund
+    assetStage: 비상금
+    impactFormula: 발견 - 내 진짜 가처분액
+    completionCriteria: 고정지출 입력 후 가용액 산출
+
+  - id: mvp-emergency-fund-goal
+    sourceCode: M-2
+    title: 내 비상금 목표 정하기
+    challengeType: A
+    estimatedMinutes: 5
+    category: emergency_fund
+    assetStage: 비상금
+    impactFormula: 생활비 x N개월, 직업안정성 개인화
+    completionCriteria: 목표액 확정 및 저장
+
+  - id: mvp-emergency-fund-account-auto-transfer
+    sourceCode: M-3
+    title: 비상금 통장 분리 + 자동이체
+    challengeType: B
+    estimatedMinutes: 20
+    category: emergency_fund
+    assetStage: 비상금
+    representative: true
+    impactFormula: 월 저축액 x 12, 연 환산 라벨
+    completionCriteria: 자가체크와 회고 게이트
+
+  - id: mvp-net-worth-first-calc
+    sourceCode: M-4
+    title: 순자산 첫 계산
+    challengeType: A
+    estimatedMinutes: 10
+    category: emergency_fund
+    assetStage: 비상금
+    impactFormula: 발견
+    completionCriteria: 자산과 부채 입력 후 순자산 확인
+    notes: 진단 데이터와 공유한다.
+
+  - id: mvp-subscription-audit-cancel-one
+    sourceCode: M-5
+    title: 구독 전수조사 + 1개 이상 해지
+    challengeType: B
+    estimatedMinutes: 10
+    category: spending_habit
+    assetStage: 공통
+    representative: true
+    impactFormula: 해지 구독료 x 12
+    completionCriteria: 해지 항목 체크
+
+  - id: mvp-delivery-cut-weekly
+    sourceCode: M-6
+    title: 배달 줄이기 주간 미션
+    challengeType: C
+    durationLabel: 주간
+    category: spending_habit
+    assetStage: 공통
+    impactFormula: 회당 평균 배달비 x 줄인 횟수, 실발생
+    completionCriteria: 일별 체크인
+
+  - id: mvp-no-spend-day
+    sourceCode: M-7
+    title: 무지출 데이 1회
+    challengeType: C
+    durationLabel: 하루
+    category: spending_habit
+    assetStage: 공통
+    impactFormula: 평균 일지출, 실발생
+    completionCriteria: 당일 체크
+
+  - id: mvp-impulse-24h-hold
+    sourceCode: M-8
+    title: 충동구매 24시간 보류 규칙 설치
+    challengeType: C
+    durationLabel: 3분+24h
+    category: spending_habit
+    assetStage: 공통
+    impactFormula: 보류 후 미구매액, 실발생
+    completionCriteria: 위시리스트 등록 후 24시간 뒤 판단 기록
+
+  - id: mvp-labor-hour-price
+    sourceCode: M-9
+    title: 시급으로 환산해보기
+    subtitle: 이 물건 = 내 노동 몇 시간
+    challengeType: A
+    estimatedMinutes: 5
+    category: spending_habit
+    assetStage: 공통
+    impactFormula: 발견과 재미
+    completionCriteria: 물건 1개 환산 완료
+
+  - id: mvp-mobile-plan-compare
+    sourceCode: M-10
+    title: 통신비 비교 + 요금제/알뜰폰 갈아타기
+    challengeType: B
+    durationLabel: 15분+
+    category: fixed_cost
+    assetStage: 공통
+    representative: true
+    impactFormula: (현 요금 - 새 요금) x 12
+    completionCriteria: 비교 완료, 변경은 자율
+
+  - id: mvp-deposit-rate-check
+    sourceCode: M-11
+    title: 예·적금 금리 비교 점검
+    subtitle: 금융상품한눈에
+    challengeType: B
+    estimatedMinutes: 10
+    category: saving
+    assetStage: 공통
+    impactFormula: 금리차 x 원금, 연 환산 라벨
+    completionCriteria: 공식 사이트 비교표 확인
+
+  - id: mvp-money-scan-policy-benefits
+    sourceCode: M-12
+    title: 놓치는 돈 스캔
+    subtitle: 숨은 지원금·감면 확인
+    challengeType: A
+    estimatedMinutes: 7
+    category: tax_policy
+    assetStage: 공통
+    representative: true
+    impactFormula: 해당 항목 합산, 찾은 돈
+    completionCriteria: 자격 문항 응답 후 결과 확인
+    requiresSources: true
+
+  - id: mvp-year-end-tax-preview
+    sourceCode: M-13
+    title: 연말정산 미리보기
+    subtitle: 중기 감면·월세공제 등 발견
+    challengeType: B
+    estimatedMinutes: 15
+    category: tax_policy
+    assetStage: 공통
+    impactFormula: 발견 공제액, 추정 라벨
+    completionCriteria: 시뮬레이션 결과 저장
+    requiresSources: true
+
+  - id: mvp-credit-score-first-check
+    sourceCode: M-14
+    title: 신용점수 첫 조회 + 올리는 행동 1개
+    challengeType: B
+    estimatedMinutes: 8
+    category: credit_safety
+    assetStage: 공통
+    impactFormula: 발견
+    completionCriteria: 조회 인증 자가체크와 행동 선택
+
+  - id: mvp-housing-subscription-open
+    sourceCode: M-15
+    title: 청약통장 만들기
+    subtitle: 자격·혜택 확인 후 개설 안내
+    challengeType: B
+    estimatedMinutes: 20
+    category: housing_pension
+    assetStage: 청약·연금
+    representative: true
+    impactFormula: 소득공제 40% 산식, 해당자 연 환산 라벨
+    completionCriteria: 자가체크와 회고 게이트
+    requiresSources: true
+
+  - id: mvp-letter-to-future-self
+    sourceCode: M-16
+    title: 1년 뒤 나에게 편지 봉인
+    challengeType: A
+    estimatedMinutes: 7
+    category: retention
+    assetStage: 리텐션
+    impactFormula: 1년 뒤 오픈 알림, 재방문 트리거
+    completionCriteria: 작성 및 봉인
+
+expansion:
+  - id: exp-weekly-spending-limit
+    title: 일주일 소비 한도 정하기 + 관리 항목 1개
+    challengeType: C
+    category: spending_money_management
+  - id: exp-payment-pause-3-seconds
+    title: 결제 전 3초 멈춤 하루 실천
+    challengeType: C
+    category: spending_money_management
+  - id: exp-fixed-expense-three-total
+    title: 고정지출 3개 적고 총액 확인
+    challengeType: A
+    category: spending_money_management
+    linkedTo: mvp-disposable-income
+  - id: exp-cafe-spending-weekly-goal
+    title: 카페 소비 점검 + 주간 목표
+    challengeType: C
+    category: spending_money_management
+  - id: exp-envelope-budget
+    title: 생활비 봉투 예산 나누기
+    challengeType: A
+    category: spending_money_management
+  - id: exp-monthly-spending-one-line-review
+    title: 이번 달 소비 한 줄 회고
+    challengeType: A
+    category: spending_money_management
+    cadence: monthly
+  - id: exp-find-one-money-leak
+    title: 내 돈 새는 구멍 1개 찾기
+    challengeType: A
+    category: spending_money_management
+  - id: exp-spending-top-three
+    title: 소비 TOP3 뽑기
+    challengeType: A
+    category: spending_money_management
+    linkedTo: onboarding-spending-character-test
+  - id: exp-latte-factor-compound
+    title: 라떼팩터 찾고 30년 복리 계산
+    challengeType: A
+    category: spending_money_management
+  - id: exp-four-account-structure
+    title: 4통장 구조 완성
+    challengeType: B
+    category: spending_money_management
+    linkedTo: mvp-emergency-fund-account-auto-transfer
+  - id: exp-50-30-20-budget
+    title: 50/30/20 예산표 작성
+    challengeType: A
+    category: spending_money_management
+  - id: exp-weekly-saving-challenge
+    title: 주간 저축 챌린지
+    challengeType: C
+    category: spending_money_management
+    notes: 원본 30일 저축을 주간 리듬으로 변환
+  - id: exp-smart-goals
+    title: 재무 목표 3개 SMART 설정
+    challengeType: A
+    category: spending_money_management
+  - id: exp-economic-news-3days
+    title: 경제 뉴스 3일 연속 1줄 기록
+    challengeType: C
+    category: spending_money_management
+  - id: exp-insurance-audit
+    title: 보험 전수조사 + 중복 정리
+    challengeType: B
+    category: insurance_debt_family
+    sourceHint: 내보험찾아줌
+  - id: exp-student-loan-strategy
+    title: 학자금 대출 상환 전략 수립
+    challengeType: B
+    category: insurance_debt_family
+    condition: 해당자
+  - id: exp-family-finance-talk
+    title: 부모님과 재무 대화 10분
+    challengeType: B
+    category: insurance_debt_family
+    priority: later
+    notes: 민감도가 있어 선택형 후순위
+  - id: exp-simple-vs-compound-calculator
+    title: 단리 vs 복리 계산기 체험
+    challengeType: A
+    category: saving_investing
+  - id: exp-installment-vs-lump-sum-simulation
+    title: 적립식 vs 거치식 30년 시뮬레이션
+    challengeType: A
+    category: saving_investing
+  - id: exp-fee-tax-real-return
+    title: 수수료+세금 떼고 실질 수익 계산
+    challengeType: A
+    category: saving_investing
+  - id: exp-leverage-etf-volatility-loss
+    title: 레버리지 ETF 변동성 손실 시뮬레이션
+    challengeType: A
+    category: saving_investing
+    safetyIntent: protective_education
+  - id: exp-investment-principles
+    title: 투자 원칙 3가지 작성·저장
+    challengeType: A
+    category: saving_investing
+  - id: exp-watchlist-observation-5days
+    title: 5종목 워치리스트 5일 관찰 일지
+    challengeType: C
+    category: saving_investing
+    safetyNote: 매수 아닌 관찰
+  - id: exp-dart-report-summary
+    title: DART 사업보고서 핵심 3줄 요약
+    challengeType: B
+    category: saving_investing
+  - id: exp-dividend-calendar-tax
+    title: 배당 캘린더 + 세후 배당 계산
+    challengeType: A
+    category: saving_investing
+  - id: exp-treasury-yield-compare
+    title: 국고채 금리 찾고 예금·주식과 비교
+    challengeType: A
+    category: saving_investing
+  - id: exp-portfolio-spreadsheet
+    title: 스프레드시트 포트폴리오 시트 제작
+    challengeType: B
+    category: saving_investing
+    condition: 4단계 도달자
+  - id: exp-etf-three-comparison-table
+    title: ETF 3개 비교표 완성
+    challengeType: B
+    category: saving_investing
+    wordingRule: 1개 선택 금지, 내 기준 비교표 완성으로 표현
+  - id: exp-financial-ratio-reading
+    title: PER/PBR/ROE 지표 읽기 연습
+    challengeType: A
+    category: saving_investing
+    wordingRule: 종목 판결 금지, 재무 체력 읽는 연습으로 표현
+  - id: exp-isa-pension-irp-priority
+    title: ISA·연금저축·IRP 역할 구분 + 내 우선순위 정하기
+    challengeType: A
+    category: saving_investing
+    condition: 3단계 이상
+  - id: exp-fx-scenario-return
+    title: 환율 3개 시나리오 수익률 계산
+    challengeType: A
+    category: saving_investing
+  - id: exp-reit-structure-dividend
+    title: 리츠 구조 이해 + 배당 계산
+    challengeType: A
+    category: saving_investing
+
+absorbed:
+  - source: 예금과 적금 차이 / 금리 1% 중요성
+    absorbedInto: M-11 예적금 비교의 스텝1
+  - source: 체크카드 vs 신용카드
+    absorbedInto: 카드 점검 챌린지 스텝1
+  - source: 신용점수 첫 이해
+    absorbedInto: M-14 스텝1
+  - source: 예금자보호 구분 / 금융상품 설명서 읽기
+    absorbedInto: M-11·M-15 스텝
+  - source: 단리/복리, 수익률-손실률 비대칭, ETF vs 주식, 세전/세후
+    absorbedInto: 투자 입문 챌린지 스텝1 + SRS 퀴즈
+  - source: 위험 대비 수익 관점 / 리밸런싱 개념 / 의사결정 기준
+    absorbedInto: 4단계 챌린지 스텝 + SRS
+  - source: 금융 용어 약점 찾기 / 금융 레벨 테스트
+    absorbedInto: SRS 복습 시스템 + O-1 문항
+  - source: 밸런스 게임 / 1만원 상상 게임 / 첫 금융 목표 고르기
+    absorbedInto: O-1 온보딩 테스트 문항
+  - source: 내 카드 소비 캐릭터 찾기
+    absorbedInto: O-1로 승격
+  - source: 신용카드 혜택 구조 점검
+    absorbedInto: 확장 카드 점검과 통합
+  - source: 자산 배분 상태 보기
+    absorbedInto: 4단계 진단 기능과 통합
+  - source: 투자 강의 수강+요약
+    absorbedInto: 자체 스텝 콘텐츠로 대체
+    status: held
+    reason: 외부 콘텐츠 품질 통제 문제
+  - source: 카드 소비 캐릭터
+    absorbedInto: O-1 소비 캐릭터 테스트
+  - source: 통장 별명 붙이기
+    absorbedInto: O-2 내 통장에 이름 붙여주기
+  - source: 내 통장은 무슨 역할
+    absorbedInto: O-2 내 통장에 이름 붙여주기
+
+isolatedOrExcluded:
+  - source: 증권 계좌 개설 + 실제 1주 매수
+    status: isolated
+    reason: 실매수 유도
+    possibleReplacement: 계좌 개설·모의투자까지, 4단계 전용+자율 원칙 필요
+  - source: 해외 주식 환전 + 1주 매수
+    status: isolated
+    reason: 실매수 유도와 환리스크
+  - source: 공모주 청약 실제 참여
+    status: isolated
+    reason: 실투자 유도와 시점성 리스크
+  - source: 섹터 ETF 비교 + 유망 산업 선택
+    status: isolated
+    reason: 전망·추천 유도, 유사투자자문 경계
+  - source: 월간 투자 계획 + 투자 자동이체 설정
+    status: isolated
+    reason: 4단계 도달자 전용, 상품 비특정, 면책 전제로만 검토
+  - source: 부자 아침 루틴 조사 + 적용
+    status: excluded
+    reason: 자기계발 유사과학 톤, 공식 근거 기반 신뢰성 포지션과 충돌
+  - source: PER/PBR 판결문 작성 원형
+    status: excluded
+    reason: 종목 판단 유도 표현
+    replacement: exp-financial-ratio-reading
+  - source: ETF 1개 선택 원형
+    status: excluded
+    reason: 선택 유도 표현
+    replacement: exp-etf-three-comparison-table
+
+nextActions:
+  - 완료 2026-07-09 — MVP 16개 스텝 시나리오 작성 (mvp-core-challenges.yaml)
+  - 완료 2026-07-09 — 정책류 M-12, M-13, M-15의 validUntil과 source 필드 채우기 (최신 고시 재검증은 남음)
+  - O-1 소비 캐릭터 테스트 문항 8개와 캐릭터 6종 확정
+  - gain 산식의 기준값 출처 확정

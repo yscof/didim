@@ -1,0 +1,45 @@
+# macOS
+.DS_Store
+
+# IDE / editor
+.idea/
+.vscode/
+.claude/settings.local.json
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Flutter / Dart
+frontend/.dart_tool/
+frontend/.flutter-plugins
+frontend/.flutter-plugins-dependencies
+frontend/.packages
+frontend/build/
+frontend/coverage/
+
+# Android / iOS local files
+frontend/android/local.properties
+frontend/ios/Pods/
+frontend/ios/.symlinks/
+frontend/ios/Flutter/Flutter.framework
+frontend/ios/Flutter/Flutter.podspec
+
+# Java / Spring Boot
+backend/.gradle/
+backend/build/
+backend/out/
+
+# Python / FastAPI
+ai/.venv/
+ai/__pycache__/
+ai/.pytest_cache/
+ai/.mypy_cache/
+ai/.ruff_cache/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
