@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 
 import '../features/challenge/challenge_detail_screen.dart';
 import '../features/challenge/completion_reaction_screen.dart';
+import '../features/gains/gain_detail_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/map/map_screen.dart';
 
@@ -20,6 +21,11 @@ GoRouter createRouter() {
           GoRoute(
             path: 'map',
             builder: (context, state) => const MapScreen(),
+          ),
+          GoRoute(
+            path: 'gains/:track',
+            builder: (context, state) =>
+                GainDetailScreen(track: state.pathParameters['track']!),
           ),
           GoRoute(
             path: 'challenge/:id',

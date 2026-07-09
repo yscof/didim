@@ -40,12 +40,20 @@ class HomeScreen extends ConsumerWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: _CounterCard(label: '지킨 돈', amount: realized),
+                      child: _CounterCard(
+                        label: '지킨 돈',
+                        amount: realized,
+                        onTap: () => context.go('/gains/realized'),
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: _CounterCard(
-                          label: '예약된 돈', amount: reserved, estimated: true),
+                        label: '예약된 돈',
+                        amount: reserved,
+                        estimated: true,
+                        onTap: () => context.go('/gains/reserved'),
+                      ),
                     ),
                   ],
                 ),
@@ -143,26 +151,34 @@ class _CounterCard extends StatelessWidget {
   const _CounterCard({
     required this.label,
     required this.amount,
+    required this.onTap,
     this.estimated = false,
   });
 
   final String label;
   final int amount;
+  final VoidCallback onTap;
   final bool estimated;
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(estimated ? '$label (예상)' : label,
-                style: Theme.of(context).textTheme.labelMedium),
-            const SizedBox(height: 4),
-            Text(won(amount), style: Theme.of(context).textTheme.titleMedium),
-          ],
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(estimated ? '$label (예상)' : label,
+                  style: Theme.of(context).textTheme.labelMedium),
+              const SizedBox(height: 4),
+              Text(won(amount),
+                  style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: 2),
+              Text('내역 보기', style: Theme.of(context).textTheme.bodySmall),
+            ],
+          ),
         ),
       ),
     );

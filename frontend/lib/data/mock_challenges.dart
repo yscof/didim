@@ -24,6 +24,12 @@ const mockRegions = [
     theme: '받을 수 있는 혜택을 놓치지 않기',
     completionMessage: '정책혜택 항구의 등대가 켜졌어요. 받을 수 있는 혜택을 놓치지 않도록 안내해 드릴게요.',
   ),
+  MapRegion(
+    id: 'region-year-end-tax',
+    name: '연말정산',
+    theme: '13월의 월급 준비 — 연중에 예약하고 시즌에 채점받기',
+    completionMessage: '연말정산 준비가 끝났어요. 내년 2월, 13월의 월급으로 돌아옵니다.',
+  ),
 ];
 
 const mockChallenges = [
@@ -158,7 +164,7 @@ const mockChallenges = [
     impactAmountWon: 350000,
     regionId: 'region-benefit-harbor',
     mapEffect: '항구에 배가 들어옴',
-    progressWeight: 30,
+    progressWeight: 45,
     nextChallengeId: 'mvp-year-end-tax-preview',
   ),
   Challenge(
@@ -180,9 +186,125 @@ const mockChallenges = [
     gainLabel: GainLabel.estimated,
     impactPreview: '지금 챙기면 내년 2월 현금이 약 91만 원 늘어나요 (추정 · 2026년 기준).',
     impactAmountWon: 910000,
+    regionId: 'region-year-end-tax',
+    mapEffect: '환급 지도가 펼쳐짐',
+    progressWeight: 30,
+    nextChallengeId: 'tax-smb-income-tax-relief',
+  ),
+  Challenge(
+    id: 'mvp-housing-subscription-open',
+    title: '청약통장 만들기',
+    subtitle: '자격·혜택 확인 후 개설 안내',
+    type: ChallengeType.action,
+    estimatedMinutes: 20,
+    coachHook: '청약통장은 집 살 사람만 만드는 게 아니에요. 무주택 직장인이라면 '
+        '납입액의 40%를 소득공제 받는 절세 통장이기도 해요.',
+    whyContent: '청약통장은 가입 기간이 길수록 유리한 경우가 많아 일찍 만드는 것 자체가 자산이다. '
+        '조건이 되면 연말정산 소득공제 혜택도 함께 받는다.',
+    steps: [
+      '청약통장 보유 여부를 확인한다 (보유 시 납입 상태 점검).',
+      '자격·혜택을 확인한다 (무주택 세대주 여부, 총급여, 소득공제 조건).',
+      '월 납입액을 정한다 (인정 납입액 기준 안내).',
+      '은행 앱에서 주택청약종합저축을 개설한다.',
+    ],
+    gainLabel: GainLabel.annualized,
+    impactPreview: '연 240만 원 납입 시 소득공제로 세금 약 14.4만 원이 줄어요 (해당자 · 연 환산 · 추정).',
+    impactAmountWon: 144000,
     regionId: 'region-benefit-harbor',
-    mapEffect: '등대에 불이 켜짐',
-    progressWeight: 35,
+    mapEffect: '등대가 켜지고 새 항로가 열림',
+    progressWeight: 55,
+  ),
+
+  // ── 연말정산 카테고리 (M-13 후속 미션, didim_challenge_spec_tax.md §4·§7) ──
+  Challenge(
+    id: 'tax-smb-income-tax-relief',
+    title: '중소기업 취업자 소득세 감면 신청',
+    type: ChallengeType.action,
+    estimatedMinutes: 10,
+    coachHook: '중소기업에 다니면 소득세의 90%를 안 내도 되는 제도가 있어요. '
+        '신청서 한 장이면 되는데, 몰라서 매달 그냥 내는 사람이 태반이에요.',
+    whyContent: '만 15~34세 중소기업 재직자는 소득세 90% 감면(연 한도 200만 원, 최대 5년)을 '
+        '받을 수 있다. 감면율이 가장 크고 실행이 가장 쉬운데 인지도가 가장 낮다. '
+        '세부 요건은 회사·홈택스에서 최종 확인한다.',
+    steps: [
+      '대상인지 확인한다 (만 15~34세 + 중소기업 재직, 일부 업종 제외).',
+      '국세청 양식 감면 신청서를 작성한다.',
+      '회사(인사·경리)에 제출한다.',
+      '다음 급여명세서에서 반영을 확인한다.',
+    ],
+    gainLabel: GainLabel.estimated,
+    impactPreview: '연 약 90만 원의 소득세를 아낄 수 있어요 (추정 · 2026년 기준).',
+    impactAmountWon: 900000,
+    regionId: 'region-year-end-tax',
+    mapEffect: '13월의 금고가 열림',
+    progressWeight: 25,
+    nextChallengeId: 'tax-rent-deduction-docs',
+  ),
+  Challenge(
+    id: 'tax-rent-deduction-docs',
+    title: '월세 공제 서류 3종 모으기',
+    type: ChallengeType.action,
+    estimatedMinutes: 15,
+    coachHook: '월세 내는 무주택 직장인이라면, 서류 3장으로 낸 월세의 15~17%를 돌려받을 수 있어요. '
+        '집주인 동의는 필요 없어요.',
+    whyContent: '월세 세액공제는 무주택 + 총급여 요건 + 전입신고만 충족하면 된다. '
+        '1월 제출 시즌에 서류가 없어서 놓치는 경우가 가장 많다.',
+    steps: [
+      '임대차계약서 사본을 준비한다.',
+      '월세 이체 내역을 내려받는다.',
+      '전입신고 여부를 확인한다.',
+      '폴더에 모아둔다 (1월 연말정산 때 제출).',
+    ],
+    gainLabel: GainLabel.estimated,
+    impactPreview: '올해 낸 월세 기준 약 75만 원을 돌려받을 수 있어요 (추정 · 2026년 기준).',
+    impactAmountWon: 750000,
+    regionId: 'region-year-end-tax',
+    mapEffect: '서류 보관함이 채워짐',
+    progressWeight: 20,
+    nextChallengeId: 'tax-pension-savings-first-month',
+  ),
+  Challenge(
+    id: 'tax-pension-savings-first-month',
+    title: '연금저축 첫 달 설정',
+    type: ChallengeType.action,
+    estimatedMinutes: 10,
+    coachHook: '연금저축은 12월에 몰아 넣는 것보다 지금 시작하면 월 부담이 절반이에요. '
+        '가입할지 말지는 천천히 정해도 돼요.',
+    whyContent: '연금저축 납입액은 세액공제(총급여 5,500만 이하 16.5%) 대상이다. '
+        '특정 상품 추천은 하지 않으며, 계좌 개설 여부는 자율이다.',
+    steps: [
+      '세액공제 개념 카드를 확인한다.',
+      '월 부담액을 계산해본다 (지금 시작 vs 12월 시작 비교).',
+      '개설한다면 첫 자동이체 날짜를 정한다 (개설은 자율).',
+    ],
+    gainLabel: GainLabel.estimated,
+    impactPreview: '월 10만 원씩 연말까지 납입하면 세액공제 약 9.9만 원 (추정 · 2026년 기준).',
+    impactAmountWon: 99000,
+    regionId: 'region-year-end-tax',
+    mapEffect: '연금 나무가 심어짐',
+    progressWeight: 15,
+    nextChallengeId: 'tax-card-25-line',
+  ),
+  Challenge(
+    id: 'tax-card-25-line',
+    title: '카드 25% 라인 계산',
+    type: ChallengeType.instant,
+    estimatedMinutes: 5,
+    coachHook: '카드 공제는 총급여의 25%를 넘게 쓴 금액부터 시작돼요. '
+        '내 25% 라인을 알면 하반기 카드 전략이 달라져요.',
+    whyContent: '25% 라인 도달 전에는 혜택 좋은 신용카드, 도달 후에는 공제율 높은 '
+        '체크카드·현금영수증(30%)이 유리하다. 모든 근로소득자에게 적용된다.',
+    steps: [
+      '내 총급여를 확인한다.',
+      '총급여 x 25% 라인을 계산한다.',
+      '지금까지 카드 사용액과 비교한다.',
+      '하반기 전략을 정한다 (라인 전 신용카드 / 라인 후 체크카드).',
+    ],
+    gainLabel: GainLabel.discovery,
+    impactPreview: '내 25% 라인을 알았어요. 이제 하반기 카드 사용 전략이 생겼어요.',
+    regionId: 'region-year-end-tax',
+    mapEffect: '거리에 이정표가 세워짐',
+    progressWeight: 10,
   ),
 ];
 

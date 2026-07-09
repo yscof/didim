@@ -93,6 +93,24 @@ final earnedBadgesProvider = Provider<List<DidimBadge>>((ref) {
   return earned;
 });
 
+/// 확보효과 상세 내역. track: 'realized'(지킨 돈) | 'reserved'(예약된 돈).
+/// 실행 완료한 챌린지 중 해당 트랙 라벨에 금액이 있는 것만 반환한다.
+final gainEntriesProvider =
+    Provider.family<List<Challenge>, String>((ref, track) {
+  final progress = ref.watch(challengeProgressProvider);
+  bool matchesTrack(Challenge c) => track == 'realized'
+      ? c.gainLabel == GainLabel.realized
+      : c.gainLabel == GainLabel.estimated ||
+          c.gainLabel == GainLabel.annualized;
+  return ref
+      .watch(challengesProvider)
+      .where((c) =>
+          progress[c.id] == ChallengeStatus.executed &&
+          matchesTrack(c) &&
+          c.impactAmountWon > 0)
+      .toList();
+});
+
 /// 이번 주 추천 챌린지: 아직 완료하지 않은 첫 챌린지.
 /// TODO: 진단 결과 기반 추천 룰(recommendedRoutes)로 교체.
 final weeklyChallengeProvider = Provider<Challenge?>((ref) {

@@ -128,23 +128,77 @@ regions:
     challenges:
       - challengeId: mvp-money-scan-policy-benefits
         role: main
-        progressWeight: 30
+        progressWeight: 45
         mapEffect: 항구에 배가 들어옴
-      - challengeId: mvp-year-end-tax-preview
-        role: main
-        progressWeight: 35
-        mapEffect: 등대에 불이 켜짐
       - challengeId: mvp-housing-subscription-open
         role: main
-        progressWeight: 35
-        mapEffect: 새로운 항로가 열림 (집으로 가는 뱃길)
+        progressWeight: 55
+        mapEffect: 등대가 켜지고 새 항로가 열림 (집으로 가는 뱃길)
     followupAsSide: >
-      스캔형 챌린지(M-12, M-13)의 후속 미션(월세 서류 3종, 카드 25% 라인 체크 등)은
-      항구의 사이드 챌린지로 발행되며 화물 하역·창고 오브젝트로 표현한다.
-      진행도 초과분은 지역 완성 후 장식으로만 반영한다.
+      M-12 스캔 결과의 후속 미션은 항구의 사이드 챌린지로 발행되며
+      화물 하역·창고 오브젝트로 표현한다. 연말정산 관련 후속은
+      region-year-end-tax로 발행한다.
+
+  - id: region-year-end-tax
+    name: 연말정산
+    theme: 13월의 월급 준비 — 연중에 예약하고 시즌에 채점받기
+    status: mvp
+    unlockCondition: 기본 해금 (시즌 11~2월에는 홈에서 우선 노출)
+    completionMessage: >
+      연말정산 준비가 끝났어요. 내년 2월, 13월의 월급으로 돌아옵니다.
+    challenges:
+      - challengeId: mvp-year-end-tax-preview
+        role: main
+        progressWeight: 30
+        mapEffect: 환급 지도가 펼쳐짐
+      - challengeId: tax-smb-income-tax-relief
+        role: main
+        progressWeight: 25
+        mapEffect: 13월의 금고가 열림
+      - challengeId: tax-rent-deduction-docs
+        role: main
+        progressWeight: 20
+        mapEffect: 서류 보관함이 채워짐
+      - challengeId: tax-pension-savings-first-month
+        role: side
+        progressWeight: 15
+        mapEffect: 연금 나무가 심어짐
+      - challengeId: tax-card-25-line
+        role: side
+        progressWeight: 10
+        mapEffect: 거리에 이정표가 세워짐
+    sideChallengeDefs:
+      - id: tax-smb-income-tax-relief
+        title: 중소기업 취업자 소득세 감면 신청
+        challengeType: B
+        estimatedMinutes: 10
+        summary: M-13 히어로 항목의 독립 챌린지화. 감면 신청서 작성 후 회사 제출.
+        gainLabel: estimated
+        source: didim_challenge_spec_tax.md §4-1
+      - id: tax-rent-deduction-docs
+        title: 월세 공제 서류 3종 모으기
+        challengeType: B
+        estimatedMinutes: 15
+        summary: 임대차계약서 사본, 월세 이체내역, 전입신고 확인을 모아 1월 제출 대비.
+        gainLabel: estimated
+        source: didim_challenge_spec_tax.md §4-2
+      - id: tax-pension-savings-first-month
+        title: 연금저축 첫 달 설정
+        challengeType: B
+        estimatedMinutes: 10
+        summary: 개념·계산기 확인 후 개설은 자율 (상품 비특정 원칙).
+        gainLabel: estimated
+        source: didim_challenge_spec_tax.md §4-4
+      - id: tax-card-25-line
+        title: 카드 25% 라인 계산
+        challengeType: A
+        estimatedMinutes: 5
+        summary: 총급여 25% 라인 계산과 하반기 카드 전략 설정.
+        gainLabel: discovery
+        source: didim_challenge_spec_tax.md §4-5
     seasonEvent: >
       M-13 시즌 트리거(10월 말 미리보기, 1월 서류 제출)는
-      '등대 점검의 날' 항구 이벤트로 표현한다.
+      이 지역의 '채점의 날' 이벤트로 표현한다 (연 3회 재방문 트리거).
 
   - id: region-credit-fortress
     name: 신용·부채 요새

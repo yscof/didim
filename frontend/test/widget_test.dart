@@ -4,8 +4,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:didim/main.dart';
 
 Future<void> scrollToAndTap(WidgetTester tester, String text) async {
-  await tester.scrollUntilVisible(find.text(text), 100);
-  await tester.tap(find.text(text));
+  final finder = find.text(text);
+  await tester.scrollUntilVisible(finder, 100);
+  await tester.ensureVisible(finder); // 부분적으로 가려진 경우 완전히 노출
+  await tester.pumpAndSettle();
+  await tester.tap(finder);
   await tester.pumpAndSettle();
 }
 
@@ -41,6 +44,30 @@ void main() {
     await scrollToAndTap(tester, '홈으로');
     await tester.scrollUntilVisible(find.text('15%'), 100);
     expect(find.text('15%'), findsOneWidget);
+  });
+
+  testWidgets('예약된 돈 카드를 누르면 챌린지별 상세 내역이 보인다', (tester) async {
+    await tester.pumpWidget(const ProviderScope(child: DidimApp()));
+    await tester.pumpAndSettle();
+
+    // M-1(발견형) 완료 → 다음 챌린지(구독 전수조사, 연 환산 118,800원) 완료
+    await scrollToAndTap(tester, '이번 주 챌린지 시작하기');
+    await scrollToAndTap(tester, '실행까지 했어요');
+    await scrollToAndTap(tester, '다음 챌린지 확인');
+    await scrollToAndTap(tester, '실행까지 했어요');
+    await scrollToAndTap(tester, '홈으로');
+
+    // 예약된 돈 카드 → 상세 내역
+    await tester.scrollUntilVisible(find.text('예약된 돈 (예상)'), 100);
+    await tester.tap(find.text('예약된 돈 (예상)'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('지금까지 예약된 돈 (예상)'), findsOneWidget);
+    expect(find.text('구독 전수조사 + 1개 이상 해지'), findsOneWidget);
+    expect(find.text('+118,800원'), findsOneWidget);
+
+    // 발견형(M-1)은 금액이 없으므로 내역에 나타나지 않는다
+    expect(find.text('월급 하루 생존 테스트'), findsNothing);
   });
 
   testWidgets('보류하면 홈으로 돌아오고 다음 주 재시도 안내가 보인다', (tester) async {
