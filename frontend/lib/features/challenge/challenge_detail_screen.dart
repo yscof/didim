@@ -29,7 +29,7 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('보류했어요. 다음 주에 다시 이어갈 수 있어요.')),
       );
-      context.go('/');
+      context.pop();
     } else {
       context.go('/challenge/${widget.challengeId}/reaction');
     }
@@ -43,7 +43,9 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(leading: BackButton(onPressed: () => context.go('/'))),
+      // 뒤로가기는 기본 pop을 쓴다. 중첩 라우트라 딥링크로 진입해도
+      // 상위 스택(홈)이 함께 만들어져 항상 pop이 가능하다.
+      appBar: AppBar(),
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 520),

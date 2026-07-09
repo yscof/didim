@@ -15,10 +15,7 @@ class MapScreen extends ConsumerWidget {
     final regions = ref.watch(regionsProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('금융 여정 지도'),
-        leading: BackButton(onPressed: () => context.go('/')),
-      ),
+      appBar: AppBar(title: const Text('금융 여정 지도')),
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 520),
@@ -128,7 +125,8 @@ class _ChallengeTile extends StatelessWidget {
       subtitle: Text(status == ChallengeStatus.none
           ? challenge.mapEffect
           : '${status.label} · ${challenge.mapEffect}'),
-      onTap: () => context.go('/challenge/${challenge.id}'),
+      // push라서 챌린지에서 뒤로가기하면 지도로 돌아온다.
+      onTap: () => context.push('/challenge/${challenge.id}'),
     );
   }
 }
