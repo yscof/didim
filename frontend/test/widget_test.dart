@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:didim/data/mock_challenges.dart';
+import 'package:didim/data/models.dart';
 import 'package:didim/main.dart';
 
 Future<void> scrollToAndTap(WidgetTester tester, String text) async {
@@ -68,6 +70,46 @@ void main() {
 
     // 발견형(M-1)은 금액이 없으므로 내역에 나타나지 않는다
     expect(find.text('월급 하루 생존 테스트'), findsNothing);
+  });
+
+  testWidgets('웹 레이아웃: 메뉴바로 챌린지 리스트에 가서 카테고리별로 본다', (tester) async {
+    await tester.pumpWidget(
+        const ProviderScope(child: DidimApp(webLayout: true)));
+    await tester.pumpAndSettle();
+
+    // 무신사 스타일 상단 메뉴바: 로고 + 글로벌 메뉴
+    expect(find.text('디딤'), findsOneWidget);
+    expect(find.text('여정 지도'), findsOneWidget);
+
+    await tester.tap(find.text('챌린지'));
+    await tester.pumpAndSettle();
+    expect(find.text('전체 챌린지 ${mockChallenges.length}개'), findsOneWidget);
+
+    // 연말정산 카테고리: 세금 챌린지들 + 청약통장(소득공제 관련)
+    await tester.tap(find.text('연말정산'));
+    await tester.pumpAndSettle();
+    final yearEndTaxCount = mockChallenges
+        .where((c) => c.categories.contains(ChallengeCategory.yearEndTax))
+        .length;
+    expect(find.text('연말정산 챌린지 $yearEndTaxCount개'), findsOneWidget);
+    expect(find.text('13월의 월급 예약하기'), findsOneWidget);
+    expect(find.text('청약통장 만들기'), findsOneWidget);
+    expect(find.text('무지출 데이 1회'), findsNothing);
+
+    // 리스트에서 챌린지를 누르면 상세로 가고, 메뉴바는 유지된다
+    await tester.tap(find.text('청약통장 만들기'));
+    await tester.pumpAndSettle();
+    expect(find.text('왜 필요한가요?'), findsOneWidget);
+    expect(find.text('디딤'), findsOneWidget);
+  });
+
+  testWidgets('앱 레이아웃에는 상단 메뉴바가 없다', (tester) async {
+    await tester.pumpWidget(
+        const ProviderScope(child: DidimApp(webLayout: false)));
+    await tester.pumpAndSettle();
+
+    expect(find.text('디딤'), findsNothing);
+    expect(find.text('여정 지도'), findsNothing);
   });
 
   testWidgets('보류하면 홈으로 돌아오고 다음 주 재시도 안내가 보인다', (tester) async {

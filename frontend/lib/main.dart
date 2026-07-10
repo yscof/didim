@@ -10,14 +10,18 @@ void main() {
 }
 
 class DidimApp extends StatefulWidget {
-  const DidimApp({super.key});
+  const DidimApp({super.key, this.webLayout});
+
+  /// 웹 레이아웃(상단 메뉴바) 강제 여부. null이면 kIsWeb을 따른다.
+  /// 테스트에서 웹/앱 레이아웃을 각각 검증하기 위한 주입점이다.
+  final bool? webLayout;
 
   @override
   State<DidimApp> createState() => _DidimAppState();
 }
 
 class _DidimAppState extends State<DidimApp> {
-  late final GoRouter _router = createRouter();
+  late final GoRouter _router = createRouter(webLayout: widget.webLayout);
 
   @override
   Widget build(BuildContext context) {

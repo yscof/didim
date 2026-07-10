@@ -6,6 +6,14 @@ import 'models.dart';
 final challengesProvider = Provider<List<Challenge>>((ref) => mockChallenges);
 final regionsProvider = Provider<List<MapRegion>>((ref) => mockRegions);
 
+/// 카테고리별 챌린지 목록. null이면 전체를 반환한다.
+final challengesByCategoryProvider =
+    Provider.family<List<Challenge>, ChallengeCategory?>((ref, category) {
+  final challenges = ref.watch(challengesProvider);
+  if (category == null) return challenges;
+  return challenges.where((c) => c.categories.contains(category)).toList();
+});
+
 final challengeByIdProvider = Provider.family<Challenge?, String>((ref, id) {
   for (final c in ref.watch(challengesProvider)) {
     if (c.id == id) return c;

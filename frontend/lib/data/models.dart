@@ -25,6 +25,20 @@ enum GainLabel {
   final String label;
 }
 
+/// 챌린지 탐색용 카테고리. 지도 지역(MapRegion)과 별개의 브라우징 축이다.
+/// shared/challenges/challenge-library-v1.yaml의 category 분류를 사용자용
+/// 라벨로 묶은 것. 한 챌린지가 여러 카테고리에 속할 수 있다
+/// (예: 청약통장 = 정책 혜택 + 연말정산 소득공제).
+enum ChallengeCategory {
+  spending('소비 절약'),
+  saving('저축·비상금'),
+  benefit('정책 혜택'),
+  yearEndTax('연말정산');
+
+  const ChallengeCategory(this.label);
+  final String label;
+}
+
 /// 완료 상태 3분류 + 미시작.
 enum ChallengeStatus {
   none('시작 전'),
@@ -49,6 +63,7 @@ class Challenge {
     required this.gainLabel,
     required this.impactPreview,
     this.impactAmountWon = 0,
+    required this.categories,
     required this.regionId,
     required this.mapEffect,
     required this.progressWeight,
@@ -72,6 +87,7 @@ class Challenge {
   /// 카운터에 반영할 금액. 실행 완료 시에만 반영한다.
   final int impactAmountWon;
 
+  final List<ChallengeCategory> categories;
   final String regionId;
   final String mapEffect;
   final int progressWeight;
