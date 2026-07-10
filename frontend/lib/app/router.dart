@@ -7,6 +7,7 @@ import '../features/challenge/completion_reaction_screen.dart';
 import '../features/challenges/challenge_list_screen.dart';
 import '../features/gains/gain_detail_screen.dart';
 import '../features/home/home_screen.dart';
+import '../features/home/web_home_screen.dart';
 import '../features/map/map_screen.dart';
 import 'web_shell.dart';
 
@@ -24,7 +25,9 @@ GoRouter createRouter({bool? webLayout}) {
   final routes = [
     GoRoute(
       path: '/',
-      builder: (context, state) => const HomeScreen(),
+      // 웹은 넓은 화면용 대시보드형 홈, 앱은 모바일 홈을 쓴다.
+      builder: (context, state) =>
+          isWeb ? const WebHomeScreen() : const HomeScreen(),
       routes: [
         GoRoute(
           path: 'challenges',

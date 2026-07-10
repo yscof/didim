@@ -29,23 +29,47 @@ class ChallengeListScreen extends ConsumerWidget {
             Expanded(
               child: Center(
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 720),
-                  child: ListView(
-                    padding: const EdgeInsets.all(20),
-                    children: [
-                      Text(
-                        '${category?.label ?? '전체'} 챌린지 ${challenges.length}개',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      const SizedBox(height: 8),
-                      for (final challenge in challenges)
-                        _ChallengeListCard(
-                          challenge: challenge,
-                          regionName: regions
-                              .firstWhere((r) => r.id == challenge.regionId)
-                              .name,
-                        ),
-                    ],
+                  constraints: const BoxConstraints(maxWidth: 960),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      // 웹처럼 넓은 화면에서는 2열 그리드로 보여준다.
+                      final twoColumn = constraints.maxWidth >= 720;
+                      final cards = [
+                        for (final challenge in challenges)
+                          _ChallengeListCard(
+                            challenge: challenge,
+                            regionName: regions
+                                .firstWhere((r) => r.id == challenge.regionId)
+                                .name,
+                          ),
+                      ];
+                      return ListView(
+                        padding: const EdgeInsets.all(20),
+                        children: [
+                          Text(
+                            '${category?.label ?? '전체'} 챌린지'
+                            ' ${challenges.length}개',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                          const SizedBox(height: 8),
+                          if (twoColumn)
+                            Wrap(
+                              spacing: 12,
+                              children: [
+                                for (final card in cards)
+                                  SizedBox(
+                                    // 패딩(40)과 카드 간격(12)을 뺀 2열 폭.
+                                    width:
+                                        (constraints.maxWidth - 40 - 12) / 2,
+                                    child: card,
+                                  ),
+                              ],
+                            )
+                          else
+                            ...cards,
+                        ],
+                      );
+                    },
                   ),
                 ),
               ),
@@ -74,7 +98,7 @@ class _CategoryTabBar extends StatelessWidget {
       ),
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 720),
+          constraints: const BoxConstraints(maxWidth: 960),
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 8),

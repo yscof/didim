@@ -77,9 +77,13 @@ void main() {
         const ProviderScope(child: DidimApp(webLayout: true)));
     await tester.pumpAndSettle();
 
-    // 무신사 스타일 상단 메뉴바: 로고 + 글로벌 메뉴
+    // 상단 메뉴바: 로고 + 왼쪽 정렬 글로벌 메뉴
     expect(find.text('디딤'), findsOneWidget);
     expect(find.text('여정 지도'), findsOneWidget);
+
+    // 웹 홈: 넓은 화면용 대시보드 레이아웃 (히어로 + 지역 카드 그리드)
+    expect(find.text('이번 주 챌린지 시작하기'), findsOneWidget);
+    expect(find.text('생활비 마을'), findsOneWidget);
 
     await tester.tap(find.text('챌린지'));
     await tester.pumpAndSettle();
