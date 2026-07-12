@@ -21,19 +21,40 @@ final challengeByIdProvider = Provider.family<Challenge?, String>((ref, id) {
   return null;
 });
 
-/// 챌린지별 완료 상태. TODO: 백엔드 연동 시 서버 상태로 교체.
-class ChallengeProgress extends Notifier<Map<String, ChallengeStatus>> {
+/// 챌린지별 완료 기록. TODO: 백엔드 연동 시 서버 상태로 교체.
+class ChallengeCompletionNotifier
+    extends Notifier<Map<String, ChallengeCompletion>> {
   @override
-  Map<String, ChallengeStatus> build() => const {};
+  Map<String, ChallengeCompletion> build() => const {};
 
+  /// 계획 완료·보류처럼 게이트 없이 상태만 기록할 때 쓴다.
   void setStatus(String challengeId, ChallengeStatus status) {
-    state = {...state, challengeId: status};
+    state = {...state, challengeId: ChallengeCompletion(status: status)};
+  }
+
+  /// 실행 완료 게이트를 통과한 기록. 회고는 필수, 증빙은 선택.
+  void completeExecuted(String challengeId,
+      {required String reflection, bool hasEvidence = false}) {
+    state = {
+      ...state,
+      challengeId: ChallengeCompletion(
+        status: ChallengeStatus.executed,
+        reflection: reflection,
+        hasEvidence: hasEvidence,
+      ),
+    };
   }
 }
 
+final challengeCompletionProvider = NotifierProvider<
+    ChallengeCompletionNotifier,
+    Map<String, ChallengeCompletion>>(ChallengeCompletionNotifier.new);
+
+/// 기존 화면·프로바이더 호환용 파생 상태. 완료 기록에서 상태만 뽑는다.
 final challengeProgressProvider =
-    NotifierProvider<ChallengeProgress, Map<String, ChallengeStatus>>(
-        ChallengeProgress.new);
+    Provider<Map<String, ChallengeStatus>>((ref) => ref
+        .watch(challengeCompletionProvider)
+        .map((id, c) => MapEntry(id, c.status)));
 
 /// 지역 진행도(%). 실행 완료 = 가중치 100%, 계획 완료 = 50% 반영.
 /// 규칙 출처: shared/gamification/journey-map.yaml progressRules.
@@ -97,6 +118,11 @@ final earnedBadgesProvider = Provider<List<DidimBadge>>((ref) {
   if (done('mvp-money-scan-policy-benefits') ||
       done('mvp-year-end-tax-preview')) {
     earned.add(mockBadges[2]); // 혜택 탐험가
+  }
+  final completions = ref.watch(challengeCompletionProvider);
+  if (completions.values.any(
+      (c) => c.status == ChallengeStatus.executed && c.hasEvidence)) {
+    earned.add(mockBadges[3]); // 기록으로 남긴 실행 (증빙 보너스)
   }
   return earned;
 });

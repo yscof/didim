@@ -36,6 +36,9 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_riverpod: ^3.3.2
   go_router: ^17.3.0
+  # 완료 검증의 인증샷 첨부(선택). 웹은 추가 설정 없이 동작한다.
+  # 모바일 스토어 배포 시 iOS Info.plist 사진 권한 문구 추가 필요.
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:

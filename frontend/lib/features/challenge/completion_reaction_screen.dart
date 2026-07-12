@@ -20,8 +20,8 @@ class CompletionReactionScreen extends ConsumerWidget {
       return const Scaffold(body: Center(child: Text('챌린지를 찾을 수 없어요.')));
     }
 
-    final status = ref.watch(challengeProgressProvider)[challengeId] ??
-        ChallengeStatus.none;
+    final completion = ref.watch(challengeCompletionProvider)[challengeId];
+    final status = completion?.status ?? ChallengeStatus.none;
     final regions = ref.watch(regionsProvider);
     final region = regions.firstWhere((r) => r.id == challenge.regionId);
     final percent = ref.watch(regionProgressProvider(region.id));
@@ -62,6 +62,26 @@ class CompletionReactionScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
+                // 증빙 보너스는 배지·연출로만 보상한다 (금액 미가산 — 진정성 원칙).
+                if (completion?.hasEvidence == true) ...[
+                  const SizedBox(height: 12),
+                  Card(
+                    color: Theme.of(context).colorScheme.secondaryContainer,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('실행 인증 보너스',
+                              style: Theme.of(context).textTheme.labelMedium),
+                          const SizedBox(height: 4),
+                          const Text(
+                              '인증샷과 함께 기록했어요. 「기록으로 남긴 실행」 배지 획득!'),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 12),
                 Card(
                   child: Padding(

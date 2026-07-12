@@ -50,6 +50,24 @@ enum ChallengeStatus {
   final String label;
 }
 
+/// 챌린지 1개의 완료 기록. 상태 + 실행 완료 게이트에서 수집한 회고·증빙 여부.
+/// 증빙 이미지 자체는 저장하지 않는다 (개인정보 원칙: 첨부 여부만 기록).
+class ChallengeCompletion {
+  const ChallengeCompletion({
+    required this.status,
+    this.reflection,
+    this.hasEvidence = false,
+  });
+
+  final ChallengeStatus status;
+
+  /// 실행 완료 게이트에서 입력한 회고. 계획 완료·보류는 null.
+  final String? reflection;
+
+  /// 인증샷 첨부 여부. 보너스 배지 조건에만 쓰이고 금액에는 영향 없다.
+  final bool hasEvidence;
+}
+
 class Challenge {
   const Challenge({
     required this.id,
@@ -60,6 +78,8 @@ class Challenge {
     required this.coachHook,
     required this.whyContent,
     required this.steps,
+    required this.completionCheckQuestions,
+    required this.reflectionQuestions,
     required this.gainLabel,
     required this.impactPreview,
     this.impactAmountWon = 0,
@@ -78,6 +98,14 @@ class Challenge {
   final String coachHook;
   final String whyContent;
   final List<String> steps;
+
+  /// 완료 확인 시트의 자가체크 질문. 전부 긍정해야 실행 완료로 인정한다.
+  /// 출처: shared/challenges/mvp-core-challenges.yaml completionCheckQuestions.
+  final List<String> completionCheckQuestions;
+
+  /// 회고 질문. MVP 게이트는 첫 번째 질문 1개만 사용한다.
+  final List<String> reflectionQuestions;
+
   final GainLabel gainLabel;
 
   /// 완료 리액션 2단계에 보여줄 금융 효과 문구.

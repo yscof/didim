@@ -4,9 +4,11 @@ import 'package:go_router/go_router.dart';
 
 import '../../data/app_state.dart';
 import '../../data/models.dart';
+import 'completion_confirm_sheet.dart';
 
 /// 챌린지 상세. S2 템플릿의 훅 → 스텝 체크리스트 → 완료 확인
 /// (docs/15-challenge-scenarios.md).
+/// 실행 완료는 자가검증 게이트(스텝 전체 체크 → 완료 확인 시트)를 거친다.
 class ChallengeDetailScreen extends ConsumerStatefulWidget {
   const ChallengeDetailScreen({super.key, required this.challengeId});
 
@@ -22,7 +24,7 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
 
   void _complete(ChallengeStatus status) {
     ref
-        .read(challengeProgressProvider.notifier)
+        .read(challengeCompletionProvider.notifier)
         .setStatus(widget.challengeId, status);
     if (status == ChallengeStatus.held) {
       // TODO: 보류 사유 선택과 재시도 예약 (holdReasonOptions)
@@ -33,6 +35,23 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
     } else {
       context.go('/challenge/${widget.challengeId}/reaction');
     }
+  }
+
+  /// 실행 완료 게이트: 완료 확인 시트에서 자가체크 + 회고를 통과해야
+  /// 실행 완료로 기록한다. '아직이에요'는 계획 완료로 전환한다.
+  Future<void> _confirmExecuted(Challenge challenge) async {
+    final result = await showCompletionConfirmSheet(context, challenge);
+    if (result == null || !mounted) return;
+    if (result.toPlanned) {
+      _complete(ChallengeStatus.planned);
+      return;
+    }
+    ref.read(challengeCompletionProvider.notifier).completeExecuted(
+          widget.challengeId,
+          reflection: result.reflection!,
+          hasEvidence: result.hasEvidence,
+        );
+    context.go('/challenge/${widget.challengeId}/reaction');
   }
 
   @override
@@ -104,12 +123,23 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
                 ),
               const SizedBox(height: 16),
               FilledButton(
-                onPressed: () => _complete(ChallengeStatus.executed),
+                // 자가검증 게이트 1단: 스텝을 모두 체크해야 실행 완료 진행.
+                onPressed: _checkedSteps.length == challenge.steps.length
+                    ? () => _confirmExecuted(challenge)
+                    : null,
                 child: const Padding(
                   padding: EdgeInsets.symmetric(vertical: 12),
                   child: Text('실행까지 했어요'),
                 ),
               ),
+              if (_checkedSteps.length != challenge.steps.length) ...[
+                const SizedBox(height: 8),
+                Text(
+                  '위 단계를 모두 체크하면 실행 완료를 진행할 수 있어요.',
+                  style: Theme.of(context).textTheme.bodySmall,
+                  textAlign: TextAlign.center,
+                ),
+              ],
               const SizedBox(height: 8),
               OutlinedButton(
                 onPressed: () => _complete(ChallengeStatus.planned),
