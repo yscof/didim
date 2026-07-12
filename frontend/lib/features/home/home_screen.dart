@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../data/app_state.dart';
 import '../../data/models.dart';
+import 'streak_card.dart';
 
 /// 홈 화면. docs/16-gamification.md 5장: 핵심 버튼은 항상 하나다.
 class HomeScreen extends ConsumerWidget {
@@ -57,6 +58,8 @@ class HomeScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
+                const SizedBox(height: 20),
+                const StreakCard(),
                 const SizedBox(height: 20),
                 Text('금융 여정 지도', style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 8),

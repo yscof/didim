@@ -4,8 +4,10 @@ import 'package:go_router/go_router.dart';
 
 import '../../data/app_state.dart';
 import '../../data/models.dart';
+import 'region_scene.dart';
 
-/// 금융 여정 지도. MVP는 리스트형 지도, 오브젝트 연출은 후속 결정
+/// 금융 여정 지도. 지역별 마일스톤 이모지 장면(RegionScene)으로 진행을
+/// 시각화한다. 일러스트·애니메이션 연출 수준은 후속 결정
 /// (docs/09-open-questions.md).
 class MapScreen extends ConsumerWidget {
   const MapScreen({super.key});
@@ -78,6 +80,8 @@ class _RegionCard extends ConsumerWidget {
             ),
             const SizedBox(height: 4),
             Text(region.theme, style: Theme.of(context).textTheme.bodySmall),
+            const SizedBox(height: 10),
+            RegionScene(regionId: region.id, percent: percent),
             const SizedBox(height: 12),
             LinearProgressIndicator(
               value: percent / 100,

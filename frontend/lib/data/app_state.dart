@@ -130,6 +130,12 @@ final earnedBadgesProvider = Provider<List<DidimBadge>>((ref) {
       (c) => c.status == ChallengeStatus.executed && c.hasEvidence)) {
     earned.add(mockBadges[3]); // 기록으로 남긴 실행 (증빙 보너스)
   }
+  // 이번 주 유지 + 과거 연속 주 합산이 2주 이상이면 스트릭 배지.
+  // 이번 주 기록 없이는 목 히스토리만으로 지급하지 않는다.
+  if (completions.isNotEmpty &&
+      1 + consecutivePastWeeks(mockStreakHistory) >= 2) {
+    earned.add(mockBadges[4]); // 2주 금융 루틴
+  }
   return earned;
 });
 
@@ -149,6 +155,54 @@ final gainEntriesProvider =
           matchesTrack(c) &&
           completions[c.id]!.impactWon > 0)
       .toList();
+});
+
+/// 히스토리 끝(최근)에서부터 이어진 유지 주 수. 완료와 성실한 보류 모두
+/// 유지로 센다 (docs/16 6장). provider 간 파생 체인을 피하려고 순수 함수로
+/// 두고 weeklyStreakProvider와 earnedBadgesProvider가 공유한다.
+int consecutivePastWeeks(List<WeeklyStreakEntry> history) {
+  var weeks = 0;
+  for (final entry in history.reversed) {
+    if (entry.status == WeeklyStreakStatus.missed) break;
+    weeks++;
+  }
+  return weeks;
+}
+
+/// 주간 스트릭 스냅샷.
+class WeeklyStreak {
+  const WeeklyStreak({
+    required this.pastWeeks,
+    required this.thisWeekKept,
+    required this.thisWeekHeldOnly,
+  });
+
+  /// 과거 연속 유지 주 수 (목 히스토리 기준).
+  final int pastWeeks;
+
+  /// 이번 주 유지 여부: 완료(계획·실행) 또는 성실한 보류 기록 1개 이상.
+  final bool thisWeekKept;
+
+  /// 이번 주가 보류로만 유지됐는지 (문구·도트 구분용).
+  final bool thisWeekHeldOnly;
+
+  int get totalWeeks => thisWeekKept ? pastWeeks + 1 : pastWeeks;
+}
+
+/// 주간 스트릭. 매주 핵심 챌린지 1개 이상 완료 시 유지, 성실한 보류도
+/// 유지로 인정한다 (docs/16 6장). 과거 주는 목 히스토리로 시뮬레이션.
+/// TODO: 성실한 보류 게이트(사유 기록 + 재시도 예약)는 보류 사유 입력
+/// 구현 시 강화한다.
+final weeklyStreakProvider = Provider<WeeklyStreak>((ref) {
+  final completions = ref.watch(challengeCompletionProvider);
+  final kept = completions.isNotEmpty; // none은 저장되지 않는다
+  final heldOnly = kept &&
+      completions.values.every((c) => c.status == ChallengeStatus.held);
+  return WeeklyStreak(
+    pastWeeks: consecutivePastWeeks(mockStreakHistory),
+    thisWeekKept: kept,
+    thisWeekHeldOnly: heldOnly,
+  );
 });
 
 /// 이번 주 추천 챌린지: 아직 완료하지 않은 첫 챌린지.

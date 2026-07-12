@@ -412,6 +412,15 @@ const mockChallenges = [
   ),
 ];
 
+/// 과거 주 스트릭 목 히스토리 (오래된 → 최근).
+/// 쉼(비초기화)·완료·성실한 보류를 한 세트로 보여주고, 이번 주를 유지하면
+/// "3주 연속"이 되도록 구성했다. TODO: 백엔드 연동 시 완료 이벤트 기반 계산.
+const mockStreakHistory = [
+  WeeklyStreakEntry(weekLabel: '3주 전', status: WeeklyStreakStatus.missed),
+  WeeklyStreakEntry(weekLabel: '2주 전', status: WeeklyStreakStatus.completed),
+  WeeklyStreakEntry(weekLabel: '지난주', status: WeeklyStreakStatus.heldKept),
+];
+
 const mockBadges = [
   DidimBadge(
     id: 'badge-first-action',
@@ -432,5 +441,10 @@ const mockBadges = [
     id: 'badge-verified-action',
     name: '기록으로 남긴 실행',
     description: '실행 완료를 인증샷과 함께 기록했어요.',
+  ),
+  DidimBadge(
+    id: 'badge-routine-2weeks',
+    name: '2주 금융 루틴',
+    description: '2주 연속 금융 루틴을 지켰어요.',
   ),
 ];

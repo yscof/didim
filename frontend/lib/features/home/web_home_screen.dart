@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../data/app_state.dart';
 import '../../data/models.dart';
+import 'streak_card.dart';
 
 /// 웹 전용 홈. 모바일 홈(HomeScreen)을 그대로 띄우면 좁은 세로 화면이
 /// 어색하게 떠 보여서, 넓은 화면을 활용하는 대시보드형 레이아웃을 쓴다.
@@ -80,6 +81,8 @@ class WebHomeScreen extends ConsumerWidget {
                       const SizedBox(height: 12),
                       ...counters,
                     ],
+                    const SizedBox(height: 16),
+                    const StreakCard(),
                     const SizedBox(height: 28),
                     Row(
                       children: [

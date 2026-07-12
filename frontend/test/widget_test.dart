@@ -8,6 +8,7 @@ import 'package:didim/data/evidence_picker.dart';
 import 'package:didim/data/mock_challenges.dart';
 import 'package:didim/data/models.dart';
 import 'package:didim/features/challenge/completion_confirm_sheet.dart';
+import 'package:didim/features/map/region_scene.dart';
 import 'package:didim/main.dart';
 
 /// 1x1 투명 PNG. 증빙 픽커 fake가 돌려주는 바이트.
@@ -118,6 +119,7 @@ void main() {
     expect(find.textContaining('실행 완료!'), findsOneWidget);
     expect(find.text('금융 효과'), findsOneWidget);
     expect(find.text('지도 변화'), findsOneWidget);
+    expect(find.byType(RegionScene), findsOneWidget); // 지도 장면
     expect(find.text('첫 금융 행동'), findsOneWidget); // 첫 배지
 
     await tester.scrollUntilVisible(find.text('다음 추천 챌린지'), 100);
@@ -303,6 +305,7 @@ void main() {
 
     // 웹 홈: 넓은 화면용 대시보드 레이아웃 (히어로 + 지역 카드 그리드)
     expect(find.text('이번 주 챌린지 시작하기'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('생활비 마을'), 100);
     expect(find.text('생활비 마을'), findsOneWidget);
 
     await tester.tap(find.text('챌린지'));
@@ -345,5 +348,24 @@ void main() {
 
     expect(find.text('보류했어요. 다음 주에 다시 이어갈 수 있어요.'), findsOneWidget);
     expect(find.text('이번 주 챌린지 시작하기'), findsOneWidget);
+
+    // 성실한 보류도 스트릭 유지로 인정한다 (docs/16 6장)
+    expect(find.text('이번 주는 성실한 보류로 리듬을 지켰어요.'), findsOneWidget);
+  });
+
+  testWidgets('주간 스트릭: 완료하면 3주 연속이 되고 2주 루틴 배지를 받는다', (tester) async {
+    await tester.pumpWidget(const ProviderScope(child: DidimApp()));
+    await tester.pumpAndSettle();
+
+    // 목 히스토리: 쉼 → 완료 → 성실한 보류 = 과거 2주 연속 유지
+    expect(find.text('이번 주 챌린지를 완료하면 3주 연속이 돼요.'), findsOneWidget);
+
+    await scrollToAndTap(tester, '이번 주 챌린지 시작하기');
+    await completeExecuted(tester);
+    await scrollToAndTap(tester, '홈으로');
+
+    expect(find.text('🔥 3주 연속 금융 루틴'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('2주 금융 루틴'), 100);
+    expect(find.text('2주 금융 루틴'), findsOneWidget);
   });
 }

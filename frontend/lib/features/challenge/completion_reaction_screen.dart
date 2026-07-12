@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../data/app_state.dart';
 import '../../data/models.dart';
+import '../map/region_scene.dart';
 
 /// 완료 리액션 5단계: 완료 인정 → 금융 효과 → 지도 변화 → 배지 → 다음 챌린지
 /// (docs/16-gamification.md 3장). MVP는 한 화면에 순서대로 배치한다.
@@ -98,6 +99,20 @@ class CompletionReactionScreen extends ConsumerWidget {
                             style: Theme.of(context).textTheme.labelMedium),
                         const SizedBox(height: 4),
                         Text('${region.name} $percent% · ${challenge.mapEffect}'),
+                        const SizedBox(height: 8),
+                        RegionScene(
+                          regionId: region.id,
+                          percent: percent,
+                          // 직전 진행도는 이번 완료의 기여분을 역산한다.
+                          // planned→executed 업그레이드는 직전 상태를 저장하지
+                          // 않아 과대 계산될 수 있으나 연출용이라 수용한다.
+                          previousPercent: (percent -
+                                  (status == ChallengeStatus.executed
+                                      ? challenge.progressWeight
+                                      : (challenge.progressWeight / 2)
+                                          .round()))
+                              .clamp(0, 100),
+                        ),
                         const SizedBox(height: 8),
                         LinearProgressIndicator(
                           value: percent / 100,

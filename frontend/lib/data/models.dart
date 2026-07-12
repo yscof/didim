@@ -151,6 +151,24 @@ class Challenge {
   final String? nextChallengeId;
 }
 
+/// 주간 스트릭 한 주의 상태. heldKept = 성실한 보류(사유 기록 + 재시도
+/// 예약)로 리듬을 유지한 주 (docs/16-gamification.md 6장).
+enum WeeklyStreakStatus {
+  completed('완료'),
+  heldKept('성실한 보류'),
+  missed('쉼');
+
+  const WeeklyStreakStatus(this.label);
+  final String label;
+}
+
+class WeeklyStreakEntry {
+  const WeeklyStreakEntry({required this.weekLabel, required this.status});
+
+  final String weekLabel;
+  final WeeklyStreakStatus status;
+}
+
 class MapRegion {
   const MapRegion({
     required this.id,
