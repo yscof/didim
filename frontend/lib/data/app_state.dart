@@ -50,21 +50,20 @@ final challengeCompletionProvider = NotifierProvider<
     ChallengeCompletionNotifier,
     Map<String, ChallengeCompletion>>(ChallengeCompletionNotifier.new);
 
-/// 기존 화면·프로바이더 호환용 파생 상태. 완료 기록에서 상태만 뽑는다.
-final challengeProgressProvider =
-    Provider<Map<String, ChallengeStatus>>((ref) => ref
-        .watch(challengeCompletionProvider)
-        .map((id, c) => MapEntry(id, c.status)));
+// 주의: 완료 상태를 Map으로 변환하는 파생 Provider를 두면 상태 변경 직후
+// 화면 전환 시 위젯 build 중에 lazy 재계산·전파가 일어나
+// "setState() called during build"로 터진다. 모든 파생 프로바이더는
+// challengeCompletionProvider를 직접 watch한다.
 
 /// 지역 진행도(%). 실행 완료 = 가중치 100%, 계획 완료 = 50% 반영.
 /// 규칙 출처: shared/gamification/journey-map.yaml progressRules.
 final regionProgressProvider = Provider.family<int, String>((ref, regionId) {
-  final progress = ref.watch(challengeProgressProvider);
+  final completions = ref.watch(challengeCompletionProvider);
   final challenges = ref.watch(challengesProvider);
   var percent = 0.0;
   for (final c in challenges) {
     if (c.regionId != regionId) continue;
-    switch (progress[c.id]) {
+    switch (completions[c.id]?.status) {
       case ChallengeStatus.executed:
         percent += c.progressWeight;
       case ChallengeStatus.planned:
@@ -78,40 +77,43 @@ final regionProgressProvider = Provider.family<int, String>((ref, regionId) {
 
 /// 지킨 돈: realized 확보효과만 합산한다 (실행 완료 기준).
 final realizedWonProvider = Provider<int>((ref) {
-  final progress = ref.watch(challengeProgressProvider);
+  final completions = ref.watch(challengeCompletionProvider);
   return ref
       .watch(challengesProvider)
       .where((c) =>
           c.gainLabel == GainLabel.realized &&
-          progress[c.id] == ChallengeStatus.executed)
+          completions[c.id]?.status == ChallengeStatus.executed)
       .fold(0, (sum, c) => sum + c.impactAmountWon);
 });
 
 /// 예약된 돈: estimated·annualized 효과의 별도 트랙 (실행 완료 기준).
 final reservedWonProvider = Provider<int>((ref) {
-  final progress = ref.watch(challengeProgressProvider);
+  final completions = ref.watch(challengeCompletionProvider);
   return ref
       .watch(challengesProvider)
       .where((c) =>
           (c.gainLabel == GainLabel.estimated ||
               c.gainLabel == GainLabel.annualized) &&
-          progress[c.id] == ChallengeStatus.executed)
+          completions[c.id]?.status == ChallengeStatus.executed)
       .fold(0, (sum, c) => sum + c.impactAmountWon);
 });
 
 /// 획득한 배지. 규칙 출처: shared/gamification/badges.yaml.
 final earnedBadgesProvider = Provider<List<DidimBadge>>((ref) {
-  final progress = ref.watch(challengeProgressProvider);
+  final completions = ref.watch(challengeCompletionProvider);
+  ChallengeStatus status(String id) =>
+      completions[id]?.status ?? ChallengeStatus.none;
   bool done(String id) =>
-      progress[id] == ChallengeStatus.planned ||
-      progress[id] == ChallengeStatus.executed;
+      status(id) == ChallengeStatus.planned ||
+      status(id) == ChallengeStatus.executed;
 
   final earned = <DidimBadge>[];
-  if (progress.values.any((s) =>
-      s == ChallengeStatus.planned || s == ChallengeStatus.executed)) {
+  if (completions.values.any((c) =>
+      c.status == ChallengeStatus.planned ||
+      c.status == ChallengeStatus.executed)) {
     earned.add(mockBadges[0]); // 첫 금융 행동
   }
-  if (progress['mvp-emergency-fund-account-auto-transfer'] ==
+  if (status('mvp-emergency-fund-account-auto-transfer') ==
       ChallengeStatus.executed) {
     earned.add(mockBadges[1]); // 자동저축 시작
   }
@@ -119,7 +121,6 @@ final earnedBadgesProvider = Provider<List<DidimBadge>>((ref) {
       done('mvp-year-end-tax-preview')) {
     earned.add(mockBadges[2]); // 혜택 탐험가
   }
-  final completions = ref.watch(challengeCompletionProvider);
   if (completions.values.any(
       (c) => c.status == ChallengeStatus.executed && c.hasEvidence)) {
     earned.add(mockBadges[3]); // 기록으로 남긴 실행 (증빙 보너스)
@@ -131,7 +132,7 @@ final earnedBadgesProvider = Provider<List<DidimBadge>>((ref) {
 /// 실행 완료한 챌린지 중 해당 트랙 라벨에 금액이 있는 것만 반환한다.
 final gainEntriesProvider =
     Provider.family<List<Challenge>, String>((ref, track) {
-  final progress = ref.watch(challengeProgressProvider);
+  final completions = ref.watch(challengeCompletionProvider);
   bool matchesTrack(Challenge c) => track == 'realized'
       ? c.gainLabel == GainLabel.realized
       : c.gainLabel == GainLabel.estimated ||
@@ -139,7 +140,7 @@ final gainEntriesProvider =
   return ref
       .watch(challengesProvider)
       .where((c) =>
-          progress[c.id] == ChallengeStatus.executed &&
+          completions[c.id]?.status == ChallengeStatus.executed &&
           matchesTrack(c) &&
           c.impactAmountWon > 0)
       .toList();
@@ -148,9 +149,9 @@ final gainEntriesProvider =
 /// 이번 주 추천 챌린지: 아직 완료하지 않은 첫 챌린지.
 /// TODO: 진단 결과 기반 추천 룰(recommendedRoutes)로 교체.
 final weeklyChallengeProvider = Provider<Challenge?>((ref) {
-  final progress = ref.watch(challengeProgressProvider);
+  final completions = ref.watch(challengeCompletionProvider);
   for (final c in ref.watch(challengesProvider)) {
-    final status = progress[c.id] ?? ChallengeStatus.none;
+    final status = completions[c.id]?.status ?? ChallengeStatus.none;
     if (status == ChallengeStatus.none || status == ChallengeStatus.held) {
       return c;
     }

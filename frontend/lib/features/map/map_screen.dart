@@ -54,7 +54,7 @@ class _RegionCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final percent = ref.watch(regionProgressProvider(region.id));
-    final progress = ref.watch(challengeProgressProvider);
+    final completions = ref.watch(challengeCompletionProvider);
     final challenges = ref
         .watch(challengesProvider)
         .where((c) => c.regionId == region.id)
@@ -94,7 +94,8 @@ class _RegionCard extends ConsumerWidget {
             for (final challenge in challenges)
               _ChallengeTile(
                 challenge: challenge,
-                status: progress[challenge.id] ?? ChallengeStatus.none,
+                status: completions[challenge.id]?.status ??
+                    ChallengeStatus.none,
               ),
           ],
         ),
