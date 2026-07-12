@@ -50,6 +50,7 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
           widget.challengeId,
           reflection: result.reflection!,
           hasEvidence: result.hasEvidence,
+          impactWon: result.impactWon,
         );
     context.go('/challenge/${widget.challengeId}/reaction');
   }

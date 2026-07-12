@@ -16,7 +16,10 @@ class GainDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final entries = ref.watch(gainEntriesProvider(track));
-    final total = entries.fold(0, (sum, c) => sum + c.impactAmountWon);
+    // 금액 출처는 완료 시 실측 입력으로 계산된 completion.impactWon이다.
+    final completions = ref.watch(challengeCompletionProvider);
+    final total =
+        entries.fold(0, (sum, c) => sum + completions[c.id]!.impactWon);
 
     return Scaffold(
       appBar: AppBar(title: Text(_isRealized ? '지킨 돈' : '예약된 돈')),
@@ -67,9 +70,9 @@ class GainDetailScreen extends ConsumerWidget {
                     child: ListTile(
                       title: Text(challenge.title),
                       subtitle: Text(
-                          '${challenge.gainLabel.label} · ${challenge.impactPreview}'),
+                          '${challenge.gainLabel.label} · ${challenge.impactInput?.formulaNote ?? '내 입력값 기반 계산'}'),
                       trailing: Text(
-                        '+${won(challenge.impactAmountWon)}',
+                        '+${won(completions[challenge.id]!.impactWon)}',
                         style: Theme.of(context)
                             .textTheme
                             .titleSmall

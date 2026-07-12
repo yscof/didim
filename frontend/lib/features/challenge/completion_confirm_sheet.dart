@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/evidence_picker.dart';
@@ -11,15 +12,20 @@ class CompletionGateResult {
   const CompletionGateResult.executed({
     required this.reflection,
     required this.hasEvidence,
+    required this.impactWon,
   }) : toPlanned = false;
 
   const CompletionGateResult.planned()
       : reflection = null,
         hasEvidence = false,
+        impactWon = 0,
         toPlanned = true;
 
   final String? reflection;
   final bool hasEvidence;
+
+  /// 실측 입력으로 계산된 확보효과(원). 입력형 챌린지가 아니면 0.
+  final int impactWon;
 
   /// true면 실행 대신 계획 완료로 저장한다 (빈손 방지).
   final bool toPlanned;
@@ -53,12 +59,22 @@ class _CompletionConfirmSheetState
     extends ConsumerState<CompletionConfirmSheet> {
   final _agreed = <int>{};
   final _reflection = TextEditingController();
+  final _impactAmount = TextEditingController();
   Uint8List? _evidenceBytes;
 
   @override
   void dispose() {
     _reflection.dispose();
+    _impactAmount.dispose();
     super.dispose();
+  }
+
+  /// 실측 입력값. 유효하지 않으면(비었거나 0원, 1억 이상) null.
+  /// 상한은 허위 과대 입력을 거르는 정합성 가드다.
+  int? get _validImpactInput {
+    final value = int.tryParse(_impactAmount.text.trim());
+    if (value == null || value < 1 || value >= 100000000) return null;
+    return value;
   }
 
   Future<void> _attachEvidence() async {
@@ -71,9 +87,11 @@ class _CompletionConfirmSheetState
   @override
   Widget build(BuildContext context) {
     final challenge = widget.challenge;
+    final impactSpec = challenge.impactInput;
     final canConfirm =
         _agreed.length == challenge.completionCheckQuestions.length &&
-            _reflection.text.trim().isNotEmpty;
+            _reflection.text.trim().isNotEmpty &&
+            (impactSpec == null || _validImpactInput != null);
 
     return SafeArea(
       child: Padding(
@@ -111,11 +129,38 @@ class _CompletionConfirmSheetState
                     }),
                     title: Text(question),
                   ),
+                // 실측 입력: 실제 수치를 받아 확보효과를 그 자리에서 계산한다.
+                if (impactSpec != null) ...[
+                  const SizedBox(height: 8),
+                  Text(impactSpec.label,
+                      style: Theme.of(context).textTheme.titleSmall),
+                  const SizedBox(height: 8),
+                  TextField(
+                    key: const Key('impact-input'),
+                    controller: _impactAmount,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    onChanged: (_) => setState(() {}),
+                    decoration: const InputDecoration(
+                      hintText: '숫자만 입력',
+                      suffixText: '원',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    _validImpactInput == null
+                        ? '실제 금액을 입력하면 확보효과를 계산해 드려요 (${impactSpec.formulaNote}).'
+                        : '확보효과: ${won(impactSpec.calc(_validImpactInput!))} (${impactSpec.formulaNote})',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
                 const SizedBox(height: 8),
                 Text(challenge.reflectionQuestions.first,
                     style: Theme.of(context).textTheme.titleSmall),
                 const SizedBox(height: 8),
                 TextField(
+                  key: const Key('reflection-input'),
                   controller: _reflection,
                   maxLines: 2,
                   onChanged: (_) => setState(() {}),
@@ -166,6 +211,9 @@ class _CompletionConfirmSheetState
                             CompletionGateResult.executed(
                               reflection: _reflection.text.trim(),
                               hasEvidence: _evidenceBytes != null,
+                              impactWon: impactSpec == null
+                                  ? 0
+                                  : impactSpec.calc(_validImpactInput!),
                             ),
                           )
                       : null,

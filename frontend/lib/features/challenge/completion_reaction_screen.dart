@@ -57,7 +57,12 @@ class CompletionReactionScreen extends ConsumerWidget {
                         Text('금융 효과',
                             style: Theme.of(context).textTheme.labelMedium),
                         const SizedBox(height: 4),
-                        Text(challenge.impactPreview),
+                        // 실행 완료는 실측 입력으로 계산된 금액을, 그 외에는
+                        // 미리보기 문구를 보여준다.
+                        Text(completion != null && completion.impactWon > 0
+                            ? '${won(completion.impactWon)}을 확보했어요 '
+                                '(${challenge.gainLabel.label} · 내 입력값 기반 계산)'
+                            : challenge.impactPreview),
                       ],
                     ),
                   ),

@@ -33,14 +33,18 @@ class ChallengeCompletionNotifier
   }
 
   /// 실행 완료 게이트를 통과한 기록. 회고는 필수, 증빙은 선택.
+  /// [impactWon]은 실측 입력으로 계산된 확보효과 (입력형 챌린지만 > 0).
   void completeExecuted(String challengeId,
-      {required String reflection, bool hasEvidence = false}) {
+      {required String reflection,
+      bool hasEvidence = false,
+      int impactWon = 0}) {
     state = {
       ...state,
       challengeId: ChallengeCompletion(
         status: ChallengeStatus.executed,
         reflection: reflection,
         hasEvidence: hasEvidence,
+        impactWon: impactWon,
       ),
     };
   }
@@ -76,6 +80,7 @@ final regionProgressProvider = Provider.family<int, String>((ref, regionId) {
 });
 
 /// 지킨 돈: realized 확보효과만 합산한다 (실행 완료 기준).
+/// 금액 출처는 완료 시 실측 입력으로 계산된 completion.impactWon이다.
 final realizedWonProvider = Provider<int>((ref) {
   final completions = ref.watch(challengeCompletionProvider);
   return ref
@@ -83,7 +88,7 @@ final realizedWonProvider = Provider<int>((ref) {
       .where((c) =>
           c.gainLabel == GainLabel.realized &&
           completions[c.id]?.status == ChallengeStatus.executed)
-      .fold(0, (sum, c) => sum + c.impactAmountWon);
+      .fold(0, (sum, c) => sum + completions[c.id]!.impactWon);
 });
 
 /// 예약된 돈: estimated·annualized 효과의 별도 트랙 (실행 완료 기준).
@@ -95,7 +100,7 @@ final reservedWonProvider = Provider<int>((ref) {
           (c.gainLabel == GainLabel.estimated ||
               c.gainLabel == GainLabel.annualized) &&
           completions[c.id]?.status == ChallengeStatus.executed)
-      .fold(0, (sum, c) => sum + c.impactAmountWon);
+      .fold(0, (sum, c) => sum + completions[c.id]!.impactWon);
 });
 
 /// 획득한 배지. 규칙 출처: shared/gamification/badges.yaml.
@@ -142,7 +147,7 @@ final gainEntriesProvider =
       .where((c) =>
           completions[c.id]?.status == ChallengeStatus.executed &&
           matchesTrack(c) &&
-          c.impactAmountWon > 0)
+          completions[c.id]!.impactWon > 0)
       .toList();
 });
 

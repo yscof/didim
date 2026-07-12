@@ -57,6 +57,7 @@ class ChallengeCompletion {
     required this.status,
     this.reflection,
     this.hasEvidence = false,
+    this.impactWon = 0,
   });
 
   final ChallengeStatus status;
@@ -66,6 +67,34 @@ class ChallengeCompletion {
 
   /// 인증샷 첨부 여부. 보너스 배지 조건에만 쓰이고 금액에는 영향 없다.
   final bool hasEvidence;
+
+  /// 실행 완료 시 실측 입력으로 계산·확정된 확보효과(원).
+  /// 지킨 돈/예약된 돈 카운터의 유일한 금액 출처다.
+  final int impactWon;
+}
+
+/// 확보효과 실측 입력 사양. 완료 확인 시트에서 실제 수치를 입력받아
+/// `입력값 × multiplier`로 확보효과를 계산한다. 고정 예시 금액 대신
+/// 실측을 요구해 자가검증의 거짓 비용을 높인다.
+/// 산식 출처: shared/challenges/mvp-core-challenges.yaml impactCalculation.
+class ImpactInputSpec {
+  const ImpactInputSpec({
+    required this.label,
+    required this.multiplier,
+    required this.formulaNote,
+  });
+
+  /// 입력 필드 라벨. 예: '해지한 구독의 월 요금 합계'
+  final String label;
+
+  /// 입력값에 곱할 계수. 예: 연 환산 = 12
+  final double multiplier;
+
+  /// 계산 근거 문구. 예: '월 요금 × 12개월'
+  final String formulaNote;
+
+  /// 입력값으로 확보효과(원)를 계산한다.
+  int calc(int input) => (input * multiplier).round();
 }
 
 class Challenge {
@@ -82,7 +111,7 @@ class Challenge {
     required this.reflectionQuestions,
     required this.gainLabel,
     required this.impactPreview,
-    this.impactAmountWon = 0,
+    this.impactInput,
     required this.categories,
     required this.regionId,
     required this.mapEffect,
@@ -108,12 +137,12 @@ class Challenge {
 
   final GainLabel gainLabel;
 
-  /// 완료 리액션 2단계에 보여줄 금융 효과 문구.
-  /// TODO: 실제로는 사용자 입력 기반 산식으로 계산한다 (impactCalculation).
+  /// 미완료 상태에서 보여줄 금융 효과 미리보기 문구.
+  /// 실제 금액은 완료 시 [impactInput] 실측 입력으로 계산한다.
   final String impactPreview;
 
-  /// 카운터에 반영할 금액. 실행 완료 시에만 반영한다.
-  final int impactAmountWon;
+  /// 확보효과 실측 입력 사양. null이면 발견·목표설정형(금액 없음).
+  final ImpactInputSpec? impactInput;
 
   final List<ChallengeCategory> categories;
   final String regionId;

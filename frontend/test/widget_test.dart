@@ -71,9 +71,16 @@ Future<void> completeExecuted(WidgetTester tester,
     await tester.tap(sheetChecks.at(i));
     await tester.pump();
   }
+
+  // 금액형 챌린지면 실측값을 입력한다 (구독 기준 9,900원 → 연 118,800원)
+  final impactField = find.byKey(const Key('impact-input'));
+  if (impactField.evaluate().isNotEmpty) {
+    await tester.enterText(impactField, '9900');
+    await tester.pump();
+  }
+
   await tester.enterText(
-      find.descendant(of: sheet, matching: find.byType(TextField)),
-      '생각보다 어렵지 않았어요');
+      find.byKey(const Key('reflection-input')), '생각보다 어렵지 않았어요');
   await tester.pump();
 
   if (attachEvidence) {
@@ -190,7 +197,8 @@ void main() {
     expect(tester.widget<FilledButton>(confirmButton).onPressed, isNull);
 
     // 회고까지 입력하면 활성 → 확정 → 리액션 (증빙 없으면 보너스 없음)
-    await tester.enterText(find.byType(TextField), '예상보다 작았어요');
+    await tester.enterText(
+        find.byKey(const Key('reflection-input')), '예상보다 작았어요');
     await tester.pump();
     expect(tester.widget<FilledButton>(confirmButton).onPressed, isNotNull);
 
@@ -218,6 +226,47 @@ void main() {
     await scrollToAndTap(tester, '홈으로');
     await tester.scrollUntilVisible(find.text('8%'), 100);
     expect(find.text('8%'), findsOneWidget);
+  });
+
+  testWidgets('금액형 챌린지는 실측 입력이 있어야 확정되고 입력값으로 계산된다', (tester) async {
+    await tester.pumpWidget(const ProviderScope(child: DidimApp()));
+    await tester.pumpAndSettle();
+
+    // M-1 완료 후 다음 챌린지(구독 전수조사 = 금액형)로 이동
+    await scrollToAndTap(tester, '이번 주 챌린지 시작하기');
+    await completeExecuted(tester);
+    await scrollToAndTap(tester, '다음 챌린지 확인');
+
+    await checkAllSteps(tester);
+    await scrollToAndTap(tester, '실행까지 했어요');
+
+    // 자가체크 + 회고를 채워도 실측 금액이 없으면 확정할 수 없다
+    final sheet = find.byType(CompletionConfirmSheet);
+    final sheetChecks =
+        find.descendant(of: sheet, matching: find.byType(CheckboxListTile));
+    for (var i = 0; i < sheetChecks.evaluate().length; i++) {
+      await tester.ensureVisible(sheetChecks.at(i));
+      await tester.tap(sheetChecks.at(i));
+      await tester.pump();
+    }
+    await tester.enterText(
+        find.byKey(const Key('reflection-input')), '넷플릭스를 해지했어요');
+    await tester.pump();
+    final confirmButton = find.widgetWithText(FilledButton, '실행 완료 확정');
+    expect(tester.widget<FilledButton>(confirmButton).onPressed, isNull);
+
+    // 월 요금을 입력하면 연 환산 계산이 보이고 확정할 수 있다
+    await tester.enterText(find.byKey(const Key('impact-input')), '9900');
+    await tester.pump();
+    expect(find.textContaining('확보효과: 118,800원'), findsOneWidget);
+    expect(tester.widget<FilledButton>(confirmButton).onPressed, isNotNull);
+
+    await tester.ensureVisible(find.text('실행 완료 확정'));
+    await tester.tap(find.text('실행 완료 확정'));
+    await tester.pumpAndSettle();
+
+    // 리액션 금융 효과에 내 입력값 기반 계산 결과가 보인다
+    expect(find.textContaining('118,800원을 확보했어요'), findsOneWidget);
   });
 
   testWidgets('인증샷을 첨부하면 보너스 배지를 받고 금액에는 가산되지 않는다', (tester) async {
