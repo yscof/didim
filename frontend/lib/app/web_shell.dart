@@ -60,31 +60,59 @@ class _WebHeader extends StatelessWidget {
                     ),
                     // 메뉴는 로고 옆 왼쪽 정렬. 로고와는 한 뼘 띄운다.
                     const SizedBox(width: 36),
-                    // 홈은 로고가 대신한다 (중복 메뉴 제거).
-                    _NavItem(
-                      label: '챌린지',
-                      path: '/challenges',
-                      active: currentPath.startsWith('/challenge'),
-                    ),
-                    _NavItem(
-                      label: '여정 지도',
-                      path: '/map',
-                      active: currentPath.startsWith('/map'),
-                    ),
-                    _NavItem(
-                      label: '가계부',
-                      path: '/ledger',
-                      active: currentPath.startsWith('/ledger'),
-                    ),
-                    _NavItem(
-                      label: '디지털 월세',
-                      path: '/subscriptions',
-                      active: currentPath.startsWith('/subscriptions'),
-                    ),
-                    _NavItem(
-                      label: '카드 재테크',
-                      path: '/cards',
-                      active: currentPath.startsWith('/cards'),
+                    Expanded(
+                      child: LayoutBuilder(builder: (context, constraints) {
+                        final menu = Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // 홈은 로고가 대신한다 (중복 메뉴 제거).
+                            _NavItem(
+                              label: '챌린지',
+                              path: '/challenges',
+                              active: currentPath.startsWith('/challenge'),
+                            ),
+                            _NavItem(
+                              label: '여정 지도',
+                              path: '/map',
+                              active: currentPath.startsWith('/map'),
+                            ),
+                            _NavItem(
+                              label: '가계부',
+                              path: '/ledger',
+                              active: currentPath.startsWith('/ledger'),
+                            ),
+                            _NavItem(
+                              label: '디지털 월세',
+                              path: '/subscriptions',
+                              active:
+                                  currentPath.startsWith('/subscriptions'),
+                            ),
+                            _NavItem(
+                              label: '카드 재테크',
+                              path: '/cards',
+                              active: currentPath.startsWith('/cards'),
+                            ),
+                            _NavItem(
+                              label: '서비스 소개',
+                              path: '/about',
+                              active: currentPath.startsWith('/about'),
+                            ),
+                          ],
+                        );
+                        // 좁은 창에서만 가로 스크롤로 전환한다. 평소에는 일반
+                        // Row를 유지해 페이지 세로 스크롤 동작(테스트 포함)을
+                        // 방해하지 않는다.
+                        if (constraints.maxWidth < 600) {
+                          return SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: menu,
+                          );
+                        }
+                        return Align(
+                          alignment: Alignment.centerLeft,
+                          child: menu,
+                        );
+                      }),
                     ),
                   ],
                 ),

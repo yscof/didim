@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import '../data/models.dart';
 import '../features/challenge/challenge_detail_screen.dart';
 import '../features/challenge/completion_reaction_screen.dart';
+import '../features/about/about_detail_screens.dart';
+import '../features/about/about_screen.dart';
 import '../features/cards/card_screen.dart';
 import '../features/challenges/challenge_list_screen.dart';
 import '../features/gains/gain_detail_screen.dart';
@@ -56,6 +58,20 @@ GoRouter createRouter({bool? webLayout}) {
         GoRoute(
           path: 'cards',
           builder: (context, state) => CardScreen(showAppBar: !isWeb),
+        ),
+        GoRoute(
+          path: 'about',
+          builder: (context, state) => AboutScreen(showAppBar: !isWeb),
+          routes: [
+            GoRoute(
+              path: 'verification',
+              builder: (context, state) => const AboutVerificationScreen(),
+            ),
+            GoRoute(
+              path: 'rewards',
+              builder: (context, state) => const AboutRewardsScreen(),
+            ),
+          ],
         ),
         GoRoute(
           path: 'gains/:track',
