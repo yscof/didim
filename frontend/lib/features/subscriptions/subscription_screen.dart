@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/web_footer.dart';
 import '../../data/models.dart';
 import '../../data/subscriptions.dart';
 import 'subscription_entry_sheet.dart';
@@ -112,6 +113,7 @@ class SubscriptionScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
+                if (!showAppBar) const WebFooter(),
               ],
             ),
           ),

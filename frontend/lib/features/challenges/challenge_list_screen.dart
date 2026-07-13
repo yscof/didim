@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/web_footer.dart';
 import '../../data/app_state.dart';
 import '../../data/models.dart';
 
@@ -67,6 +68,7 @@ class ChallengeListScreen extends ConsumerWidget {
                             )
                           else
                             ...cards,
+                          if (!showAppBar) const WebFooter(),
                         ],
                       );
                     },

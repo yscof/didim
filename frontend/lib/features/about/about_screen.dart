@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/web_footer.dart';
+
 /// 서비스 소개 (간략). 상세 설명은 완료 검증·보상 시스템 하위 페이지로.
 /// 원고 출처: docs/17-service-overview.md
 class AboutScreen extends StatelessWidget {
@@ -103,6 +105,7 @@ class AboutScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+                if (!showAppBar) const WebFooter(),
               ],
             ),
           ),

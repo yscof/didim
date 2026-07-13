@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/web_footer.dart';
 import '../../data/cards.dart';
 import '../../data/models.dart';
 import 'card_entry_sheet.dart';
@@ -83,6 +84,7 @@ class CardScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
+                if (!showAppBar) const WebFooter(),
               ],
             ),
           ),

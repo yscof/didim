@@ -12,6 +12,7 @@ import '../features/gains/gain_detail_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/home/web_home_screen.dart';
 import '../features/ledger/ledger_screen.dart';
+import '../features/legal/legal_screens.dart';
 import '../features/map/map_screen.dart';
 import '../features/subscriptions/subscription_screen.dart';
 import 'web_shell.dart';
@@ -58,6 +59,18 @@ GoRouter createRouter({bool? webLayout}) {
         GoRoute(
           path: 'cards',
           builder: (context, state) => CardScreen(showAppBar: !isWeb),
+        ),
+        GoRoute(
+          path: 'terms',
+          builder: (context, state) => const TermsScreen(),
+        ),
+        GoRoute(
+          path: 'privacy',
+          builder: (context, state) => const PrivacyScreen(),
+        ),
+        GoRoute(
+          path: 'disclaimer',
+          builder: (context, state) => const DisclaimerScreen(),
         ),
         GoRoute(
           path: 'about',

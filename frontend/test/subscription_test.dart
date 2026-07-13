@@ -53,8 +53,10 @@ void main() {
         find.text('구독 전수조사 챌린지 하러 가기'), 100);
     expect(find.text('구독 전수조사 챌린지 하러 가기'), findsOneWidget);
 
-    // 삭제하면 빈 상태로 돌아간다
-    await tester.scrollUntilVisible(find.byTooltip('삭제'), -100);
+    // 삭제하면 빈 상태로 돌아간다. 섹션 헤더 기준으로 위로 스크롤해
+    // 삭제 버튼이 FAB와 겹치지 않는 위치에 오게 한다.
+    await tester.scrollUntilVisible(find.text('내 구독'), -100);
+    await tester.pumpAndSettle();
     await tester.tap(find.byTooltip('삭제'));
     await tester.pumpAndSettle();
     expect(find.textContaining('아직 등록한 구독이 없어요'), findsOneWidget);
