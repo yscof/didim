@@ -81,6 +81,11 @@ class _WebHeader extends StatelessWidget {
                       path: '/subscriptions',
                       active: currentPath.startsWith('/subscriptions'),
                     ),
+                    _NavItem(
+                      label: '카드 재테크',
+                      path: '/cards',
+                      active: currentPath.startsWith('/cards'),
+                    ),
                   ],
                 ),
               ),
