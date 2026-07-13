@@ -10,6 +10,7 @@ import '../features/home/home_screen.dart';
 import '../features/home/web_home_screen.dart';
 import '../features/ledger/ledger_screen.dart';
 import '../features/map/map_screen.dart';
+import '../features/subscriptions/subscription_screen.dart';
 import 'web_shell.dart';
 
 /// 앱 인스턴스마다 새 라우터를 만든다 (테스트 격리를 위해 전역 상태 금지).
@@ -45,6 +46,11 @@ GoRouter createRouter({bool? webLayout}) {
         GoRoute(
           path: 'ledger',
           builder: (context, state) => LedgerScreen(showAppBar: !isWeb),
+        ),
+        GoRoute(
+          path: 'subscriptions',
+          builder: (context, state) =>
+              SubscriptionScreen(showAppBar: !isWeb),
         ),
         GoRoute(
           path: 'gains/:track',

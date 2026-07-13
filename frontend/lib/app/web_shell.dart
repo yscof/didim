@@ -60,11 +60,7 @@ class _WebHeader extends StatelessWidget {
                     ),
                     // 메뉴는 로고 옆 왼쪽 정렬. 로고와는 한 뼘 띄운다.
                     const SizedBox(width: 36),
-                    _NavItem(
-                      label: '홈',
-                      path: '/',
-                      active: currentPath == '/',
-                    ),
+                    // 홈은 로고가 대신한다 (중복 메뉴 제거).
                     _NavItem(
                       label: '챌린지',
                       path: '/challenges',
@@ -79,6 +75,11 @@ class _WebHeader extends StatelessWidget {
                       label: '가계부',
                       path: '/ledger',
                       active: currentPath.startsWith('/ledger'),
+                    ),
+                    _NavItem(
+                      label: '디지털 월세',
+                      path: '/subscriptions',
+                      active: currentPath.startsWith('/subscriptions'),
                     ),
                   ],
                 ),
