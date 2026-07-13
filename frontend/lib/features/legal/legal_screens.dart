@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 
+import '../../app/web_page_body.dart';
+
 /// 법적 고지 페이지 3종 (면책·이용약관·개인정보처리방침).
 /// MVP 베타 기준 초안으로, 정식 출시 전 법률 전문가 검토가 필요하다.
 /// 근거 문서: docs/18-compliance.md
 
 class DisclaimerScreen extends StatelessWidget {
-  const DisclaimerScreen({super.key});
+  const DisclaimerScreen({super.key, this.showAppBar = true});
+
+  /// 웹 셸(상단 메뉴바) 안에서 열릴 때는 자체 AppBar를 숨긴다.
+  final bool showAppBar;
 
   @override
   Widget build(BuildContext context) {
     return _LegalScaffold(
       title: '면책 고지',
       updatedAt: '2026년 7월 13일',
+      showAppBar: showAppBar,
       sections: const [
         (
           '금융상품 추천이 아닙니다',
@@ -42,13 +48,17 @@ class DisclaimerScreen extends StatelessWidget {
 }
 
 class TermsScreen extends StatelessWidget {
-  const TermsScreen({super.key});
+  const TermsScreen({super.key, this.showAppBar = true});
+
+  /// 웹 셸(상단 메뉴바) 안에서 열릴 때는 자체 AppBar를 숨긴다.
+  final bool showAppBar;
 
   @override
   Widget build(BuildContext context) {
     return _LegalScaffold(
       title: '이용약관',
       updatedAt: '2026년 7월 13일',
+      showAppBar: showAppBar,
       sections: const [
         (
           '제1조 (서비스의 성격)',
@@ -83,13 +93,17 @@ class TermsScreen extends StatelessWidget {
 }
 
 class PrivacyScreen extends StatelessWidget {
-  const PrivacyScreen({super.key});
+  const PrivacyScreen({super.key, this.showAppBar = true});
+
+  /// 웹 셸(상단 메뉴바) 안에서 열릴 때는 자체 AppBar를 숨긴다.
+  final bool showAppBar;
 
   @override
   Widget build(BuildContext context) {
     return _LegalScaffold(
       title: '개인정보처리방침',
       updatedAt: '2026년 7월 13일',
+      showAppBar: showAppBar,
       sections: const [
         (
           '수집하는 개인정보',
@@ -126,39 +140,42 @@ class _LegalScaffold extends StatelessWidget {
     required this.title,
     required this.updatedAt,
     required this.sections,
+    this.showAppBar = true,
   });
 
   final String title;
   final String updatedAt;
   final List<(String, String)> sections;
+  final bool showAppBar;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: showAppBar ? AppBar(title: Text(title)) : null,
       body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 720),
-            child: ListView(
-              padding: const EdgeInsets.all(20),
-              children: [
-                Text('시행일: $updatedAt (베타 기준 초안)',
-                    style: Theme.of(context).textTheme.bodySmall),
-                const SizedBox(height: 16),
-                for (final (heading, body) in sections) ...[
-                  Text(heading,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.copyWith(fontWeight: FontWeight.w700)),
-                  const SizedBox(height: 6),
-                  Text(body),
-                  const SizedBox(height: 20),
-                ],
-              ],
-            ),
-          ),
+        child: WebPageBody(
+          maxWidth: 720,
+          footer: !showAppBar,
+          children: [
+            // 웹은 AppBar가 없으므로 페이지 제목을 본문 상단에 보여준다.
+            if (!showAppBar) ...[
+              Text(title, style: Theme.of(context).textTheme.headlineSmall),
+              const SizedBox(height: 8),
+            ],
+            Text('시행일: $updatedAt (베타 기준 초안)',
+                style: Theme.of(context).textTheme.bodySmall),
+            const SizedBox(height: 16),
+            for (final (heading, body) in sections) ...[
+              Text(heading,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(fontWeight: FontWeight.w700)),
+              const SizedBox(height: 6),
+              Text(body),
+              const SizedBox(height: 20),
+            ],
+          ],
         ),
       ),
     );

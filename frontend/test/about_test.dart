@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -9,10 +10,11 @@ void main() {
         const ProviderScope(child: DidimApp(webLayout: true)));
     await tester.pumpAndSettle();
 
-    // 메뉴바 → 서비스 소개
-    await tester.tap(find.text('서비스 소개'));
+    // 메뉴바 → 서비스 소개 (Footer에도 같은 라벨 링크가 있어 키로 탭한다)
+    await tester.tap(find.byKey(const ValueKey('nav:/about')));
     await tester.pumpAndSettle();
-    expect(find.text('사회초년생을 위한 금융 행동 코치'), findsOneWidget);
+    // 소개 본문과 Footer 브랜드 문구에 같은 태그라인이 있어 존재만 확인한다.
+    expect(find.text('사회초년생을 위한 금융 행동 코치'), findsWidgets);
     expect(find.text('무엇을 할 수 있나요'), findsOneWidget);
     expect(find.text('챌린지 & 금융 여정 지도'), findsOneWidget);
 

@@ -25,22 +25,18 @@ void main() {
     expect(find.text('금융상품 추천이 아닙니다'), findsOneWidget);
     expect(find.text('모든 금액은 추정치입니다'), findsOneWidget);
 
-    // 뒤로 → 개인정보처리방침
-    await tester.pageBack();
-    await tester.pumpAndSettle();
+    // 웹 법적 고지 페이지에는 뒤로가기 AppBar가 없다. 모든 페이지 하단에
+    // Footer가 있으므로 Footer 링크로 다음 페이지로 이동한다.
+    // 면책 고지 → 개인정보처리방침
     await tester.scrollUntilVisible(find.text('개인정보처리방침'), 100);
-    await tester.ensureVisible(find.text('개인정보처리방침'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('개인정보처리방침'));
     await tester.pumpAndSettle();
     expect(find.text('수집하는 개인정보'), findsOneWidget);
     expect(find.textContaining('localStorage'), findsOneWidget);
 
-    // 뒤로 → 이용약관
-    await tester.pageBack();
-    await tester.pumpAndSettle();
+    // 개인정보처리방침 → 이용약관
     await tester.scrollUntilVisible(find.text('이용약관'), 100);
-    await tester.ensureVisible(find.text('이용약관'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('이용약관'));
     await tester.pumpAndSettle();

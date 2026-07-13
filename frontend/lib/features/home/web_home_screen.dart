@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../app/web_footer.dart';
+import '../../app/web_page_body.dart';
 import '../../data/app_state.dart';
 import '../../data/models.dart';
 import 'streak_card.dart';
@@ -23,10 +23,10 @@ class WebHomeScreen extends ConsumerWidget {
 
     return Scaffold(
       body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 960),
-            child: LayoutBuilder(
+        child: WebPageBody(
+          footer: true,
+          children: [
+            LayoutBuilder(
               builder: (context, constraints) {
                 final wide = constraints.maxWidth >= 720;
                 final counters = [
@@ -44,9 +44,8 @@ class WebHomeScreen extends ConsumerWidget {
                   ),
                 ];
 
-                return ListView(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 24, vertical: 28),
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
                       '나의 금융 여정',
@@ -104,8 +103,8 @@ class WebHomeScreen extends ConsumerWidget {
                         children: [
                           for (final region in regions)
                             SizedBox(
-                              // 패딩(48)과 카드 사이 간격(16)을 뺀 2열 폭.
-                              width: (constraints.maxWidth - 48 - 16) / 2,
+                              // 카드 사이 간격(16)을 뺀 2열 폭.
+                              width: (constraints.maxWidth - 16) / 2,
                               child: _RegionCard(region: region),
                             ),
                         ],
@@ -137,12 +136,11 @@ class WebHomeScreen extends ConsumerWidget {
                             ),
                         ],
                       ),
-                    const WebFooter(),
                   ],
                 );
               },
             ),
-          ),
+          ],
         ),
       ),
     );

@@ -66,33 +66,41 @@ class _WebHeader extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             // 홈은 로고가 대신한다 (중복 메뉴 제거).
+                            // 키는 테스트에서 Footer 링크와 같은 라벨을
+                            // 구분하기 위한 식별자다.
                             _NavItem(
+                              key: const ValueKey('nav:/challenges'),
                               label: '챌린지',
                               path: '/challenges',
                               active: currentPath.startsWith('/challenge'),
                             ),
                             _NavItem(
+                              key: const ValueKey('nav:/map'),
                               label: '여정 지도',
                               path: '/map',
                               active: currentPath.startsWith('/map'),
                             ),
                             _NavItem(
+                              key: const ValueKey('nav:/ledger'),
                               label: '가계부',
                               path: '/ledger',
                               active: currentPath.startsWith('/ledger'),
                             ),
                             _NavItem(
+                              key: const ValueKey('nav:/subscriptions'),
                               label: '디지털 월세',
                               path: '/subscriptions',
                               active:
                                   currentPath.startsWith('/subscriptions'),
                             ),
                             _NavItem(
+                              key: const ValueKey('nav:/cards'),
                               label: '카드 재테크',
                               path: '/cards',
                               active: currentPath.startsWith('/cards'),
                             ),
                             _NavItem(
+                              key: const ValueKey('nav:/about'),
                               label: '서비스 소개',
                               path: '/about',
                               active: currentPath.startsWith('/about'),
@@ -127,6 +135,7 @@ class _WebHeader extends StatelessWidget {
 
 class _NavItem extends StatelessWidget {
   const _NavItem({
+    super.key,
     required this.label,
     required this.path,
     required this.active,

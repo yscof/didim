@@ -299,8 +299,9 @@ void main() {
         const ProviderScope(child: DidimApp(webLayout: true)));
     await tester.pumpAndSettle();
 
-    // 상단 메뉴바: 로고 + 왼쪽 정렬 글로벌 메뉴
-    expect(find.text('디딤'), findsOneWidget);
+    // 상단 메뉴바: 로고 + 왼쪽 정렬 글로벌 메뉴 (Footer 브랜드 문구와
+    // 중복될 수 있어 개수 대신 존재만 확인한다)
+    expect(find.text('디딤'), findsWidgets);
     expect(find.text('여정 지도'), findsOneWidget);
 
     // 웹 홈: 넓은 화면용 대시보드 레이아웃 (히어로 + 지역 카드 그리드)

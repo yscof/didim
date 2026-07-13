@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../app/web_page_body.dart';
 import '../../data/app_state.dart';
 import '../../data/models.dart';
 
@@ -23,12 +24,10 @@ class GainDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(_isRealized ? '지킨 돈' : '예약된 돈')),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 520),
-          child: ListView(
-            padding: const EdgeInsets.all(20),
-            children: [
+      body: WebPageBody(
+        maxWidth: 520,
+        padding: const EdgeInsets.all(20),
+        children: [
               Card(
                 color: Theme.of(context).colorScheme.primaryContainer,
                 child: Padding(
@@ -81,9 +80,7 @@ class GainDetailScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-            ],
-          ),
-        ),
+        ],
       ),
     );
   }

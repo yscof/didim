@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/web_page_body.dart';
 import '../../data/app_state.dart';
 import '../../data/models.dart';
 import 'completion_confirm_sheet.dart';
@@ -66,12 +67,10 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
       // 뒤로가기는 기본 pop을 쓴다. 중첩 라우트라 딥링크로 진입해도
       // 상위 스택(홈)이 함께 만들어져 항상 pop이 가능하다.
       appBar: AppBar(),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 520),
-          child: ListView(
-            padding: const EdgeInsets.all(20),
-            children: [
+      body: WebPageBody(
+        maxWidth: 520,
+        padding: const EdgeInsets.all(20),
+        children: [
               Text(challenge.title,
                   style: Theme.of(context).textTheme.headlineSmall),
               if (challenge.subtitle != null) ...[
@@ -154,9 +153,7 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
                 onPressed: () => _complete(ChallengeStatus.held),
                 child: const Text('이번 주는 보류할게요'),
               ),
-            ],
-          ),
-        ),
+        ],
       ),
     );
   }

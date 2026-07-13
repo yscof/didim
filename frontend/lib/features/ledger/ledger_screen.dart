@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../app/web_footer.dart';
+import '../../app/web_page_body.dart';
 import '../../data/ledger.dart';
 import '../../data/models.dart';
 import 'ledger_entry_sheet.dart';
@@ -24,20 +24,39 @@ class LedgerScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: showAppBar ? AppBar(title: const Text('가계부')) : null,
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => showLedgerEntrySheet(context),
-        icon: const Icon(Icons.edit),
-        label: const Text('기록하기'),
-      ),
+      // FAB는 모바일 패턴이라 웹에서는 제목 옆 버튼으로 대체한다.
+      floatingActionButton: showAppBar
+          ? FloatingActionButton.extended(
+              onPressed: () => showLedgerEntrySheet(context),
+              icon: const Icon(Icons.edit),
+              label: const Text('기록하기'),
+            )
+          : null,
       body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 960),
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 88),
-              children: [
-                Text('$month월 가계부',
-                    style: Theme.of(context).textTheme.headlineSmall),
+        child: WebPageBody(
+          footer: !showAppBar,
+          padding: showAppBar
+              ? const EdgeInsets.fromLTRB(20, 20, 20, 88)
+              : null,
+          children: [
+                if (showAppBar)
+                  Text('$month월 가계부',
+                      style: Theme.of(context).textTheme.headlineSmall)
+                else
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text('$month월 가계부',
+                            style:
+                                Theme.of(context).textTheme.headlineSmall),
+                      ),
+                      FilledButton.icon(
+                        onPressed: () => showLedgerEntrySheet(context),
+                        icon: const Icon(Icons.edit, size: 18),
+                        label: const Text('기록하기'),
+                      ),
+                    ],
+                  ),
                 const SizedBox(height: 4),
                 Text('직접 기록하는 가벼운 가계부예요. 무지출 데이 같은 챌린지의 실측 기록과 함께 쌓여요.',
                     style: Theme.of(context).textTheme.bodySmall),
@@ -68,10 +87,13 @@ class LedgerScreen extends ConsumerWidget {
                 Text('내역', style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 8),
                 if (entries.isEmpty)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 32),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 32),
                     child: Center(
-                      child: Text('아직 기록이 없어요.\n오른쪽 아래 버튼으로 첫 지출이나 수입을 기록해보세요.',
+                      child: Text(
+                          showAppBar
+                              ? '아직 기록이 없어요.\n오른쪽 아래 버튼으로 첫 지출이나 수입을 기록해보세요.'
+                              : '아직 기록이 없어요.\n위의 기록하기 버튼으로 첫 지출이나 수입을 기록해보세요.',
                           textAlign: TextAlign.center),
                     ),
                   )
@@ -93,10 +115,7 @@ class LedgerScreen extends ConsumerWidget {
                       ),
                     ),
                   ],
-                if (!showAppBar) const WebFooter(),
-              ],
-            ),
-          ),
+          ],
         ),
       ),
     );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/web_page_body.dart';
 import '../../data/app_state.dart';
 import '../../data/models.dart';
 import 'region_scene.dart';
@@ -10,39 +11,45 @@ import 'region_scene.dart';
 /// 시각화한다. 일러스트·애니메이션 연출 수준은 후속 결정
 /// (docs/09-open-questions.md).
 class MapScreen extends ConsumerWidget {
-  const MapScreen({super.key});
+  const MapScreen({super.key, this.showAppBar = true});
+
+  /// 웹 셸(상단 메뉴바) 안에서 열릴 때는 자체 AppBar를 숨긴다.
+  final bool showAppBar;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final regions = ref.watch(regionsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('금융 여정 지도')),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 520),
-          child: ListView(
-            padding: const EdgeInsets.all(20),
-            children: [
-              for (final region in regions) _RegionCard(region: region),
-              const Card(
-                child: Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Row(
-                    children: [
-                      Icon(Icons.lock_outline),
-                      SizedBox(width: 12),
-                      Expanded(
-                        child: Text('신용·부채 요새와 저축 평원은 베타에서 열려요. '
-                            '먼저 완료한 챌린지는 열릴 때 진행도로 반영돼요.'),
-                      ),
-                    ],
+      appBar: showAppBar ? AppBar(title: const Text('금융 여정 지도')) : null,
+      body: WebPageBody(
+        maxWidth: 720,
+        footer: !showAppBar,
+        padding: showAppBar ? const EdgeInsets.all(20) : null,
+        children: [
+          // 웹은 AppBar가 없으므로 페이지 제목을 본문 상단에 보여준다.
+          if (!showAppBar) ...[
+            Text('금융 여정 지도',
+                style: Theme.of(context).textTheme.headlineSmall),
+            const SizedBox(height: 16),
+          ],
+          for (final region in regions) _RegionCard(region: region),
+          const Card(
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Icon(Icons.lock_outline),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Text('신용·부채 요새와 저축 평원은 베타에서 열려요. '
+                        '먼저 완료한 챌린지는 열릴 때 진행도로 반영돼요.'),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

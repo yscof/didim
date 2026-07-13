@@ -45,7 +45,7 @@ GoRouter createRouter({bool? webLayout}) {
         ),
         GoRoute(
           path: 'map',
-          builder: (context, state) => const MapScreen(),
+          builder: (context, state) => MapScreen(showAppBar: !isWeb),
         ),
         GoRoute(
           path: 'ledger',
@@ -62,15 +62,15 @@ GoRouter createRouter({bool? webLayout}) {
         ),
         GoRoute(
           path: 'terms',
-          builder: (context, state) => const TermsScreen(),
+          builder: (context, state) => TermsScreen(showAppBar: !isWeb),
         ),
         GoRoute(
           path: 'privacy',
-          builder: (context, state) => const PrivacyScreen(),
+          builder: (context, state) => PrivacyScreen(showAppBar: !isWeb),
         ),
         GoRoute(
           path: 'disclaimer',
-          builder: (context, state) => const DisclaimerScreen(),
+          builder: (context, state) => DisclaimerScreen(showAppBar: !isWeb),
         ),
         GoRoute(
           path: 'about',

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../app/web_page_body.dart';
+
 /// 서비스 소개 상세 페이지들. 원고 출처: docs/17-service-overview.md
 /// 소개 페이지에서 push로 진입하므로 항상 AppBar(뒤로가기)를 보여준다.
 
@@ -11,12 +13,10 @@ class AboutVerificationScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('완료 검증 방식')),
       body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 720),
-            child: ListView(
-              padding: const EdgeInsets.all(20),
-              children: const [
+        child: WebPageBody(
+          maxWidth: 720,
+          padding: const EdgeInsets.all(20),
+          children: const [
                 _Section(
                   title: '자가검증 게이트',
                   body: '디딤은 단순 결과 입력도, 이미지를 올려 OCR로 판독하는 방식도 쓰지 않아요. '
@@ -61,9 +61,7 @@ class AboutVerificationScreen extends StatelessWidget {
                       '강화할 수 있게 준비되어 있어요. 만약 현금성 보상을 도입하는 날이 온다면, '
                       '상위 단계 검증이 반드시 먼저예요.',
                 ),
-              ],
-            ),
-          ),
+          ],
         ),
       ),
     );
@@ -78,12 +76,10 @@ class AboutRewardsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('보상 시스템')),
       body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 720),
-            child: ListView(
-              padding: const EdgeInsets.all(20),
-              children: const [
+        child: WebPageBody(
+          maxWidth: 720,
+          padding: const EdgeInsets.all(20),
+          children: const [
                 _Section(
                   title: '현금·포인트·실물 보상은 없어요',
                   body: '의도된 설계예요. 현금성·경쟁형 보상은 보상 경제가 무너지거나 규제 문제로 '
@@ -128,9 +124,7 @@ class AboutRewardsScreen extends StatelessWidget {
                       '검증 가능한 실물 기여(예: 나무 심기)로 전환되는 이타적 보상을 검토하고 '
                       '있어요. 어느 쪽이든 무작위 뽑기·현금 환전은 아니에요.',
                 ),
-              ],
-            ),
-          ),
+          ],
         ),
       ),
     );

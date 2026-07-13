@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../app/web_footer.dart';
+import '../../app/web_page_body.dart';
 
 /// 서비스 소개 (간략). 상세 설명은 완료 검증·보상 시스템 하위 페이지로.
 /// 원고 출처: docs/17-service-overview.md
@@ -16,12 +16,10 @@ class AboutScreen extends StatelessWidget {
     return Scaffold(
       appBar: showAppBar ? AppBar(title: const Text('서비스 소개')) : null,
       body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 720),
-            child: ListView(
-              padding: const EdgeInsets.all(20),
-              children: [
+        child: WebPageBody(
+          maxWidth: 720,
+          footer: !showAppBar,
+          children: [
                 Text('디딤',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.w800,
@@ -105,10 +103,7 @@ class AboutScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (!showAppBar) const WebFooter(),
-              ],
-            ),
-          ),
+          ],
         ),
       ),
     );

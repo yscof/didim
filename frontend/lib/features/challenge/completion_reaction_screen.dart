@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/web_page_body.dart';
 import '../../data/app_state.dart';
 import '../../data/models.dart';
 import '../map/region_scene.dart';
@@ -33,12 +34,10 @@ class CompletionReactionScreen extends ConsumerWidget {
 
     return Scaffold(
       body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 520),
-            child: ListView(
-              padding: const EdgeInsets.all(20),
-              children: [
+        child: WebPageBody(
+          maxWidth: 520,
+          padding: const EdgeInsets.all(20),
+          children: [
                 const SizedBox(height: 24),
                 Icon(Icons.check_circle,
                     size: 72, color: Theme.of(context).colorScheme.primary),
@@ -177,9 +176,7 @@ class CompletionReactionScreen extends ConsumerWidget {
                   onPressed: () => context.go('/'),
                   child: const Text('홈으로'),
                 ),
-              ],
-            ),
-          ),
+          ],
         ),
       ),
     );

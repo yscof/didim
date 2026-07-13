@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../app/web_footer.dart';
+import '../../app/web_page_body.dart';
 import '../../data/cards.dart';
 import '../../data/models.dart';
 import 'card_entry_sheet.dart';
@@ -27,20 +27,39 @@ class CardScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: showAppBar ? AppBar(title: const Text('카드 재테크')) : null,
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => showCardEntrySheet(context),
-        icon: const Icon(Icons.add_card),
-        label: const Text('카드 추가'),
-      ),
+      // FAB는 모바일 패턴이라 웹에서는 제목 옆 버튼으로 대체한다.
+      floatingActionButton: showAppBar
+          ? FloatingActionButton.extended(
+              onPressed: () => showCardEntrySheet(context),
+              icon: const Icon(Icons.add_card),
+              label: const Text('카드 추가'),
+            )
+          : null,
       body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 960),
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 88),
-              children: [
-                Text('카드 재테크',
-                    style: Theme.of(context).textTheme.headlineSmall),
+        child: WebPageBody(
+          footer: !showAppBar,
+          padding: showAppBar
+              ? const EdgeInsets.fromLTRB(20, 20, 20, 88)
+              : null,
+          children: [
+                if (showAppBar)
+                  Text('카드 재테크',
+                      style: Theme.of(context).textTheme.headlineSmall)
+                else
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text('카드 재테크',
+                            style:
+                                Theme.of(context).textTheme.headlineSmall),
+                      ),
+                      FilledButton.icon(
+                        onPressed: () => showCardEntrySheet(context),
+                        icon: const Icon(Icons.add_card, size: 18),
+                        label: const Text('카드 추가'),
+                      ),
+                    ],
+                  ),
                 const SizedBox(height: 4),
                 Text(
                     '실적 기준을 채우면 혜택, 조건을 다 챙겼으면 해지 시점까지. '
@@ -48,10 +67,13 @@ class CardScreen extends ConsumerWidget {
                     style: Theme.of(context).textTheme.bodySmall),
                 const SizedBox(height: 16),
                 if (cards.isEmpty)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 24),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24),
                     child: Center(
-                      child: Text('아직 등록한 카드가 없어요.\n오른쪽 아래 버튼으로 관리할 카드를 등록해보세요.',
+                      child: Text(
+                          showAppBar
+                              ? '아직 등록한 카드가 없어요.\n오른쪽 아래 버튼으로 관리할 카드를 등록해보세요.'
+                              : '아직 등록한 카드가 없어요.\n위의 카드 추가 버튼으로 관리할 카드를 등록해보세요.',
                           textAlign: TextAlign.center),
                     ),
                   )
@@ -84,10 +106,7 @@ class CardScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                if (!showAppBar) const WebFooter(),
-              ],
-            ),
-          ),
+          ],
         ),
       ),
     );

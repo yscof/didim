@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../app/web_footer.dart';
+import '../../app/web_page_body.dart';
 import '../../data/models.dart';
 import '../../data/subscriptions.dart';
 import 'subscription_entry_sheet.dart';
@@ -22,20 +22,39 @@ class SubscriptionScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: showAppBar ? AppBar(title: const Text('디지털 월세')) : null,
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => showSubscriptionEntrySheet(context),
-        icon: const Icon(Icons.add),
-        label: const Text('구독 추가'),
-      ),
+      // FAB는 모바일 패턴이라 웹에서는 제목 옆 버튼으로 대체한다.
+      floatingActionButton: showAppBar
+          ? FloatingActionButton.extended(
+              onPressed: () => showSubscriptionEntrySheet(context),
+              icon: const Icon(Icons.add),
+              label: const Text('구독 추가'),
+            )
+          : null,
       body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 960),
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 88),
-              children: [
-                Text('디지털 월세',
-                    style: Theme.of(context).textTheme.headlineSmall),
+        child: WebPageBody(
+          footer: !showAppBar,
+          padding: showAppBar
+              ? const EdgeInsets.fromLTRB(20, 20, 20, 88)
+              : null,
+          children: [
+                if (showAppBar)
+                  Text('디지털 월세',
+                      style: Theme.of(context).textTheme.headlineSmall)
+                else
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text('디지털 월세',
+                            style:
+                                Theme.of(context).textTheme.headlineSmall),
+                      ),
+                      FilledButton.icon(
+                        onPressed: () => showSubscriptionEntrySheet(context),
+                        icon: const Icon(Icons.add, size: 18),
+                        label: const Text('구독 추가'),
+                      ),
+                    ],
+                  ),
                 const SizedBox(height: 4),
                 Text('매달 나가는 구독료는 또 하나의 월세예요. 현황을 보고, 줄일 수 있는 만큼 줄여봐요.',
                     style: Theme.of(context).textTheme.bodySmall),
@@ -46,10 +65,13 @@ class SubscriptionScreen extends ConsumerWidget {
                 Text('내 구독', style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 8),
                 if (subscriptions.isEmpty)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 24),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24),
                     child: Center(
-                      child: Text('아직 등록한 구독이 없어요.\n오른쪽 아래 버튼으로 쓰고 있는 구독을 등록해보세요.',
+                      child: Text(
+                          showAppBar
+                              ? '아직 등록한 구독이 없어요.\n오른쪽 아래 버튼으로 쓰고 있는 구독을 등록해보세요.'
+                              : '아직 등록한 구독이 없어요.\n위의 구독 추가 버튼으로 쓰고 있는 구독을 등록해보세요.',
                           textAlign: TextAlign.center),
                     ),
                   )
@@ -113,10 +135,7 @@ class SubscriptionScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                if (!showAppBar) const WebFooter(),
-              ],
-            ),
-          ),
+          ],
         ),
       ),
     );

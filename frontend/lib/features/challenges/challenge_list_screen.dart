@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../app/web_footer.dart';
+import '../../app/web_page_body.dart';
 import '../../data/app_state.dart';
 import '../../data/models.dart';
 
@@ -28,10 +28,10 @@ class ChallengeListScreen extends ConsumerWidget {
           children: [
             _CategoryTabBar(selected: category),
             Expanded(
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 960),
-                  child: LayoutBuilder(
+              child: WebPageBody(
+                footer: !showAppBar,
+                children: [
+                  LayoutBuilder(
                     builder: (context, constraints) {
                       // 웹처럼 넓은 화면에서는 2열 그리드로 보여준다.
                       final twoColumn = constraints.maxWidth >= 720;
@@ -44,8 +44,8 @@ class ChallengeListScreen extends ConsumerWidget {
                                 .name,
                           ),
                       ];
-                      return ListView(
-                        padding: const EdgeInsets.all(20),
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Text(
                             '${category?.label ?? '전체'} 챌린지'
@@ -59,21 +59,19 @@ class ChallengeListScreen extends ConsumerWidget {
                               children: [
                                 for (final card in cards)
                                   SizedBox(
-                                    // 패딩(40)과 카드 간격(12)을 뺀 2열 폭.
-                                    width:
-                                        (constraints.maxWidth - 40 - 12) / 2,
+                                    // 카드 간격(12)을 뺀 2열 폭.
+                                    width: (constraints.maxWidth - 12) / 2,
                                     child: card,
                                   ),
                               ],
                             )
                           else
                             ...cards,
-                          if (!showAppBar) const WebFooter(),
                         ],
                       );
                     },
                   ),
-                ),
+                ],
               ),
             ),
           ],
