@@ -8,6 +8,7 @@ import '../features/challenges/challenge_list_screen.dart';
 import '../features/gains/gain_detail_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/home/web_home_screen.dart';
+import '../features/ledger/ledger_screen.dart';
 import '../features/map/map_screen.dart';
 import 'web_shell.dart';
 
@@ -40,6 +41,10 @@ GoRouter createRouter({bool? webLayout}) {
         GoRoute(
           path: 'map',
           builder: (context, state) => const MapScreen(),
+        ),
+        GoRoute(
+          path: 'ledger',
+          builder: (context, state) => LedgerScreen(showAppBar: !isWeb),
         ),
         GoRoute(
           path: 'gains/:track',

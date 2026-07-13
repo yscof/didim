@@ -75,6 +75,11 @@ class _WebHeader extends StatelessWidget {
                       path: '/map',
                       active: currentPath.startsWith('/map'),
                     ),
+                    _NavItem(
+                      label: '가계부',
+                      path: '/ledger',
+                      active: currentPath.startsWith('/ledger'),
+                    ),
                   ],
                 ),
               ),

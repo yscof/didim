@@ -9,13 +9,16 @@ Flutter 앱 작업 영역이다. 하나의 코드베이스로 모바일(iOS/Andr
 
 ```text
 lib/
-├── main.dart              # 앱 진입점, 테마
-├── app/router.dart        # Go Router 라우트 정의
+├── main.dart              # 앱 진입점, 테마, SharedPreferences 주입
+├── app/                   # 라우터, 웹 셸(무신사식 상단 메뉴바)
 ├── data/                  # 모델·목 데이터·Riverpod 상태 (shared/ 계약 기준)
 └── features/
-    ├── home/              # 홈 (주간 챌린지, 카운터, 미니맵, 배지)
+    ├── home/              # 홈 (주간 챌린지, 카운터, 스트릭, 미니맵, 배지)
+    ├── challenges/        # 카테고리별 챌린지 목록
+    ├── challenge/         # 챌린지 상세, 완료 게이트, 완료 리액션
     ├── map/               # 금융 여정 지도
-    └── challenge/         # 챌린지 상세, 완료 리액션
+    ├── gains/             # 지킨 돈/예약된 돈 상세 내역
+    └── ledger/            # 가계부 (자가 입력, 로컬 저장)
 ```
 
 ## 역할

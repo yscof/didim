@@ -39,6 +39,7 @@ dependencies:
   # 완료 검증의 인증샷 첨부(선택). 웹은 추가 설정 없이 동작한다.
   # 모바일 스토어 배포 시 iOS Info.plist 사진 권한 문구 추가 필요.
   image_picker: ^1.1.2
+  shared_preferences: ^2.5.5
 
 dev_dependencies:
   flutter_test:

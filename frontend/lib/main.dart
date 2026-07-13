@@ -2,11 +2,19 @@ import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app/router.dart';
+import 'data/ledger.dart';
 
-void main() {
-  runApp(const ProviderScope(child: DidimApp()));
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // 가계부 등 도구 기능의 로컬 저장소 (웹=localStorage).
+  final prefs = await SharedPreferences.getInstance();
+  runApp(ProviderScope(
+    overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
+    child: const DidimApp(),
+  ));
 }
 
 class DidimApp extends StatefulWidget {
